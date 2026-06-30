@@ -1,8 +1,11 @@
 package com.cinema.service;
 
+import com.cinema.exception.InvalidInputException;
+import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
 import com.cinema.repository.BookingRepository;
 import com.cinema.repository.MovieRepository;
+import com.cinema.util.Validator;
 
 public class BookingService {
 
@@ -18,24 +21,18 @@ public class BookingService {
         this.movieRepository = movieRepository;
     }
 
-    public boolean bookSeat(int movieId, int seatId, String customerName) {
-        if (customerName == null || customerName.trim().isEmpty()) {
-            System.out.println("⚠️ Customer name is not empty.");
-            return false;
-        }
-        if (seatId < 1 || seatId > 10) {
-            System.out.println("⚠️ Seat number is not valid (1-10).");
-            return false;
-        }
+    public boolean bookSeat(int movieId, int seatId, String customerName) throws InvalidInputException, SeatUnavailableException {
+
+        Validator.validateCustomerName(customerName);
+
+        Validator.validateSeatId(seatId, 10);
 
         if (movieRepository.findById(movieId) == null) {
-            System.out.println("⚠️ This movie is not exist.");
-            return false;
+            throw new InvalidInputException("Movie ID does not exist.");
         }
 
         if (bookingRepository.isSeatBooked(movieId, seatId)) {
-            System.out.println("❌ Seat " + seatId + " is booked.");
-            return false;
+            throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
         }
 
         Booking booking = new Booking(movieId, seatId, customerName);
