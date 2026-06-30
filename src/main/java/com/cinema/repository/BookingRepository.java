@@ -9,17 +9,22 @@ import java.util.stream.Collectors;
 
 public class BookingRepository extends BaseRepository<Booking> {
 
-    private static final String FILE_PATH = "src/main/resources/data/bookings.csv";
+    private String filePath;
     private final FileStorage fileStorage;
 
     public BookingRepository() {
+        this("src/main/resources/data/bookings.csv");
+    }
+
+    public BookingRepository(String filePath) {
+        this.filePath = filePath;
         this.fileStorage = new FileStorage();
         loadFromFile();
     }
 
     public void loadFromFile() {
         try {
-            List<String> lines = fileStorage.readLines(FILE_PATH);
+            List<String> lines = fileStorage.readLines(filePath);
             data = new ArrayList<>();
 
             for (String line : lines) {
@@ -52,7 +57,7 @@ public class BookingRepository extends BaseRepository<Booking> {
               String line = booking.getMovieId() + "|" + booking.getSeatId() + "|" + booking.getCustomerName();
               lines.add(line);
           }
-          fileStorage.writeLines(FILE_PATH, lines);
+          fileStorage.writeLines(filePath, lines);
           System.out.println("📂 Saved " + data.size() + " bookings in file.");
         } catch (IOException e) {
             System.err.println("❌ Error when write file bookings.csv: " + e.getMessage());

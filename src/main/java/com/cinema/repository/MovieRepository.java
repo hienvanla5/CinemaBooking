@@ -8,11 +8,15 @@ import java.util.List;
 
 public class MovieRepository extends BaseRepository<Movie> {
 
-    private static final String FILE_PATH = "src/main/resources/data/movies.csv";
-
+    private String filePath;
     private final FileStorage fileStorage;
 
     public MovieRepository() {
+        this("src/main/resources/data/movies.csv");
+    }
+
+    public MovieRepository(String filePath) {
+        this.filePath = filePath;
         this.fileStorage = new FileStorage();
         loadFromFile();
         createSampleDataIfEmpty();
@@ -20,7 +24,7 @@ public class MovieRepository extends BaseRepository<Movie> {
 
     private void loadFromFile() {
         try {
-            List<String> lines = fileStorage.readLines(FILE_PATH);
+            List<String> lines = fileStorage.readLines(filePath);
             data = new ArrayList<>();
 
             for (String line : lines) {
@@ -79,7 +83,7 @@ public class MovieRepository extends BaseRepository<Movie> {
                 String line = movie.getId() + "|" + movie.getTitle() + "|" + movie.getDuration();
                 lines.add(line);
             }
-            fileStorage.writeLines(FILE_PATH, lines);
+            fileStorage.writeLines(filePath, lines);
             System.out.println("📂 Saved " + data.size() + " movies in file.");
         } catch (IOException e) {
             System.err.println("❌ Error when write file: " + e.getMessage());

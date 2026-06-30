@@ -15,10 +15,10 @@ public class BookingRepositoryTest {
     private BookingRepository repository;
 
     @BeforeEach
-    void setUp() throws IOException {
-        Files.createDirectories(Paths.get("src/test/resources/data"));
+    void setUp() {
+        String testBookingPath = "src/test/resources/data/bookings.csv";
 
-        repository = new BookingRepository();
+        repository = new BookingRepository(testBookingPath);
 
         repository.data.clear();
         repository.data.add(new Booking(1, 5, "Alice"));

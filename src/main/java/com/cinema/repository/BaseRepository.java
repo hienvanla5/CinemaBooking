@@ -26,4 +26,8 @@ public abstract class BaseRepository<T> implements IRepository<T> {
     public void delete(int id) {
         throw new UnsupportedOperationException("delete must be override at subclass");
     }
+
+    public void clear() {
+        data.clear();
+    }
 }

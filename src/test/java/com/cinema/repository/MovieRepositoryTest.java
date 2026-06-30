@@ -9,11 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MovieRepositoryTest {
 
     private MovieRepository repository;
-    private static final String TEST_FILE = "src/test/resources/tests_movies.csv";
 
     @BeforeEach
     void setUp() {
-        repository = new MovieRepository();
+        repository = new MovieRepository("src/test/resources/data/movies.csv");
 
         repository.data.clear();
         repository.data.add(new Movie(1, "Test Movie 1", 120));
