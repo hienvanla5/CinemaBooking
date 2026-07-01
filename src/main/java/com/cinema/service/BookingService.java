@@ -21,11 +21,12 @@ public class BookingService {
         this.movieRepository = movieRepository;
     }
 
-    public boolean bookSeat(int movieId, int seatId, String customerName) throws InvalidInputException, SeatUnavailableException {
+    public Booking bookSeat(int movieId, int seatId, String customerName) throws InvalidInputException, SeatUnavailableException {
 
         Validator.validateCustomerName(customerName);
 
-        Validator.validateSeatId(seatId, 10);
+        int maxSeats = movieRepository.getMaxSeats(movieId);
+        Validator.validateSeatId(seatId, maxSeats);
 
         if (movieRepository.findById(movieId) == null) {
             throw new InvalidInputException("Movie ID does not exist.");
@@ -38,7 +39,7 @@ public class BookingService {
         Booking booking = new Booking(movieId, seatId, customerName);
         bookingRepository.save(booking);
         System.out.println("✅ Booked ticket for " + customerName + " (Movie ID " + movieId + ", Seat " + seatId + ")");
-        return true;
+        return booking;
     }
 
 

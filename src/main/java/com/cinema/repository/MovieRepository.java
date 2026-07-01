@@ -99,4 +99,8 @@ public class MovieRepository extends BaseRepository<Movie> {
             System.out.println("✅ Created samples data.");
         }
     }
+
+    public int getMaxSeats(int movieId) {
+        return 10;
+    }
 }

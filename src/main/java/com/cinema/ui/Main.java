@@ -1,5 +1,8 @@
 package com.cinema.ui;
 
+import com.cinema.exception.InvalidInputException;
+import com.cinema.exception.SeatUnavailableException;
+import com.cinema.model.Booking;
 import com.cinema.model.Movie;
 import com.cinema.repository.MovieRepository;
 import com.cinema.service.BookingService;
@@ -95,11 +98,11 @@ public class Main {
         System.out.print("Enter customer name: ");
         String customerNameInput = scanner.nextLine();
 
-        boolean success = bookingService.bookSeat(movieId, seatId, customerNameInput);
-        if (success) {
-            System.out.println("🎉 Booking Successful for movie: " + movie.getTitle());
-        } else {
-            System.out.println("❌ Booking Failed. Please check the information again.");
+        try {
+            Booking booking = bookingService.bookSeat(movieId, seatId, customerNameInput);
+            System.out.println("🎉 Booking successfully! Ticket id: " + booking.toString());
+        } catch (InvalidInputException | SeatUnavailableException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         }
     }
 }

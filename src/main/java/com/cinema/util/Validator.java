@@ -10,9 +10,12 @@ public class Validator {
         }
     }
 
-    public static void validateSeatId(int seatId, int maxSeats) {
-        if (seatId < 1 || seatId > maxSeats) {
-            throw new InvalidInputException("Seat number must be between 1 and " + maxSeats + ".");
+    public static void validateSeatId(int seatId, int maxSeats) throws InvalidInputException {
+        if (seatId < 1) {
+            throw new InvalidInputException("Seat ID must be at least 1.");
+        }
+        if (seatId > maxSeats) {
+            throw new InvalidInputException("Seat ID must not exceed " + maxSeats + ".");
         }
     }
 }

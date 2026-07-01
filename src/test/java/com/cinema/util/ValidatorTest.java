@@ -33,4 +33,11 @@ public class ValidatorTest {
         assertThrows(InvalidInputException.class, () -> Validator.validateSeatId(-1, 10));
         assertThrows(InvalidInputException.class, () -> Validator.validateSeatId(11, 10));
     }
+
+    @Test
+    void testValidateSeatId_WithDifferentMax() {
+        assertDoesNotThrow(() -> Validator.validateSeatId(5, 10));
+        assertThrows(InvalidInputException.class, () -> Validator.validateSeatId(11, 10));
+        assertThrows(InvalidInputException.class, () -> Validator.validateSeatId(0, 10));
+    }
 }

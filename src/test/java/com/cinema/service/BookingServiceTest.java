@@ -40,15 +40,21 @@ public class BookingServiceTest {
     }
 
     @Test
-    void testBookSeat_Success() {
-        assertTrue(bookingService.bookSeat(1, 7, "Charlie"));
-        assertTrue(bookingRepository.isSeatBooked(1, 7));
+    void testBookSeat_Success_ReturnsBooking() {
+        Booking booking = bookingService.bookSeat(1, 7, "Charlie");
+        assertNotNull(booking);
+        assertEquals(1, booking.getMovieId());
+        assertEquals(7, booking.getSeatId());
+        assertEquals("Charlie", booking.getCustomerName());
     }
 
     @Test
     void testBookSeat_InvalidSeatId_ThrowsException() {
         assertThrows(InvalidInputException.class, () -> {
-           bookingService.bookSeat(1, 99, "Hello");
+           bookingService.bookSeat(1, 11, "Hello");
+        });
+        assertThrows(InvalidInputException.class, () -> {
+            bookingService.bookSeat(1, 0, "Frank");
         });
     }
 
