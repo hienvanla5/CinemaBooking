@@ -4,9 +4,7 @@ import com.cinema.model.Booking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,9 +27,8 @@ public class BookingRepositoryTest {
 
     @Test
     void testLoadFromFile() {
-        BookingRepository newRepo = new BookingRepository();
-        assertEquals(3, newRepo.findAll().size());
-        assertTrue(newRepo.isSeatBooked(1, 5));
+        assertEquals(3, repository.findAll().size());
+        assertTrue(repository.isSeatBooked(1, 5));
     }
 
     @Test
@@ -72,5 +69,17 @@ public class BookingRepositoryTest {
         BookingRepository newRepo = new BookingRepository();
         assertEquals(4, repository.findAll().size());
         assertTrue(repository.isSeatBooked(4, 1));
+    }
+
+    @Test
+    void testGetBookedSeats() {
+        List<Integer> bookedSeats = repository.getBookedSeats(1);
+        assertEquals(2, bookedSeats.size());
+        assertTrue(bookedSeats.contains(5));
+        assertFalse(bookedSeats.contains(3));
+
+        bookedSeats = repository.getBookedSeats(2);
+        assertEquals(1, bookedSeats.size());
+        assertTrue(bookedSeats.contains(3));
     }
 }

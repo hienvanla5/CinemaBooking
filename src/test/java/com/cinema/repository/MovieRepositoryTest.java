@@ -14,18 +14,16 @@ public class MovieRepositoryTest {
     void setUp() {
         repository = new MovieRepository("src/test/resources/data/movies.csv");
 
-        repository.data.clear();
-        repository.data.add(new Movie(1, "Test Movie 1", 120));
-        repository.data.add(new Movie(2, "Test Movie 2", 150));
+        repository.clear();
+        repository.data.add(new Movie(1, "Avengers: Endgame", 120));
+        repository.data.add(new Movie(2, "Titanic", 150));
         repository.saveToFile();
     }
 
     @Test
     void testLoadFromFile() {
-        MovieRepository newRepo = new MovieRepository();
         assertEquals(2, repository.findAll().size());
-        assertNotNull(newRepo.findById(1));
-        assertEquals("Test Movie 1", newRepo.findById(1).getTitle());
+        assertEquals("Avengers: Endgame", repository.findById(1).getTitle());
     }
 
     @Test
@@ -35,9 +33,9 @@ public class MovieRepositoryTest {
 
     @Test
     void testFindById() {
-        Movie movie = repository.findById(1);
+        Movie movie = repository.findById(2);
         assertNotNull(movie);
-        assertEquals("Test Movie 1", movie.getTitle());
+        assertEquals("Titanic", movie.getTitle());
     }
 
     @Test
@@ -67,9 +65,24 @@ public class MovieRepositoryTest {
     void testSaveToFilePersistence() {
         repository.save(new Movie(4, "Test Movie 4", 200));
 
-        MovieRepository newRepo = new MovieRepository();
-        assertNotNull(newRepo.findById(4));
-        assertEquals(3, newRepo.findAll().size());
+        assertNotNull(repository.findById(4));
+        assertEquals(3, repository.findAll().size());
 
+    }
+
+    @Test void testFindByName() {
+        Movie movie = repository.findByName("avengers");
+        assertNotNull(movie);
+        assertEquals("Avengers: Endgame", movie.getTitle());
+
+        movie = repository.findByName("titanic");
+        assertNotNull(movie);
+        assertEquals("Titanic", movie.getTitle());
+
+        movie = repository.findByName("inception");
+        assertNull(movie);
+
+        movie = repository.findByName("");
+        assertNull(movie);
     }
 }

@@ -103,4 +103,16 @@ public class MovieRepository extends BaseRepository<Movie> {
     public int getMaxSeats(int movieId) {
         return 10;
     }
+
+    public Movie findByName(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return null;
+        }
+
+        String lowerTitle = title.toLowerCase().trim();
+        return data.stream()
+                .filter(movie -> movie.getTitle().toLowerCase().contains(lowerTitle))
+                .findFirst()
+                .orElse(null);
+    }
 }

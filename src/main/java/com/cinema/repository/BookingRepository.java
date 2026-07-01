@@ -93,4 +93,11 @@ public class BookingRepository extends BaseRepository<Booking> {
                 .filter(b -> b.getMovieId() == movieId)
                 .collect(Collectors.toList());
     }
+
+    public List<Integer> getBookedSeats(int movieId) {
+        return data.stream()
+                .filter(booking -> booking.getMovieId() == movieId)
+                .map(Booking::getSeatId)
+                .collect(Collectors.toList());
+    }
 }
