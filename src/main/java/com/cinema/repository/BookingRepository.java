@@ -1,6 +1,7 @@
 package com.cinema.repository;
 
 import com.cinema.model.Booking;
+import com.cinema.util.AppConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class BookingRepository extends BaseRepository<Booking> {
     private final FileStorage fileStorage;
 
     public BookingRepository() {
-        this("src/main/resources/data/bookings.csv");
+        this(AppConstants.BOOKINGS_FILE);
     }
 
     public BookingRepository(String filePath) {

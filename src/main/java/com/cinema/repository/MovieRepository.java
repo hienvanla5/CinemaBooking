@@ -1,6 +1,7 @@
 package com.cinema.repository;
 
 import com.cinema.model.Movie;
+import com.cinema.util.AppConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class MovieRepository extends BaseRepository<Movie> {
     private final FileStorage fileStorage;
 
     public MovieRepository() {
-        this("src/main/resources/data/movies.csv");
+        this(AppConstants.MOVIES_FILE);
     }
 
     public MovieRepository(String filePath) {
@@ -101,7 +102,7 @@ public class MovieRepository extends BaseRepository<Movie> {
     }
 
     public int getMaxSeats(int movieId) {
-        return 10;
+        return AppConstants.DEFAULT_MAX_SEATS;
     }
 
     public Movie findByName(String title) {

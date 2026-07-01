@@ -7,7 +7,6 @@ import com.cinema.model.Movie;
 import com.cinema.repository.BookingRepository;
 import com.cinema.repository.MovieRepository;
 import com.cinema.service.BookingService;
-import com.cinema.util.Validator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -76,44 +75,74 @@ public class Main {
     private static void bookTicket() {
         showMovies();
 
-        System.out.print("Enter movie ID: ");
-        String movieIdInput = scanner.nextLine();
-        int movieId;
-        try {
-            movieId = Integer.parseInt(movieIdInput);
-        } catch (NumberFormatException e) {
-            System.out.println("⚠️ Movie ID must be a number. Please re-enter.");
+        int movieId = inputMovieId();
+        if (movieId == -1) {
             return;
         }
 
         Movie movie = movieRepository.findById(movieId);
         if (movie == null) {
-            System.out.println("⚠️ Not found movie with ID: " + movieId);
+            showMovieNotFound(movieId);
             return;
         }
 
-        System.out.print("Enter seat number (1-10): ");
-        String seatIdInput = scanner.nextLine();
-        int seatId;
+        int seatId = inputSeatId();
+        if (seatId == -1) {
+            return;
+        }
+
+        String customerName = inputCustomerName();
+
         try {
-            seatId = Integer.parseInt(seatIdInput);
+            Booking booking = bookingService.bookSeat(movieId, seatId, customerName);
+            showBookingSuccess(movie, seatId, customerName);
+        } catch (InvalidInputException e) {
+            showError("Error data: " + e.getMessage());
+        } catch (SeatUnavailableException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static int inputMovieId() {
+        System.out.print("Enter movie ID: ");
+        String input = scanner.nextLine();
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("⚠️ Movie ID must be a number. Please re-enter.");
+            return -1;
+        }
+    }
+
+    private static int inputSeatId() {
+        System.out.print("Enter seat number (1-10): ");
+        String input = scanner.nextLine();
+        try {
+            return Integer.parseInt(input);
         } catch (NumberFormatException e) {
             System.out.println("⚠️ Seat ID must be a number. Please re-enter.");
-            return;
+            return -1;
         }
+    }
 
+    private static String inputCustomerName() {
         System.out.print("Enter customer name: ");
-        String customerNameInput = scanner.nextLine();
+        return scanner.nextLine();
+    }
 
-        try {
-            Booking booking = bookingService.bookSeat(movieId, seatId, customerNameInput);
-            System.out.println("🎉 Booking successfully!");
-            System.out.println(" Ticket number: The movie " + movie.getTitle() + ", seat number " + seatId + ", customer: " + customerNameInput);
-        } catch (InvalidInputException e) {
-            System.out.println("❌ Error data: " + e.getMessage());
-        } catch (SeatUnavailableException e) {
-            System.out.println("❌ " + e.getMessage());
-        }
+    private static void showBookingSuccess(Movie movie, int seatId, String customerName) {
+        System.out.println("🎉 Booking successfully!");
+        System.out.println(" Ticket number: The movie " + movie.getTitle()
+                + ", seat number " + seatId
+                + ", customer: " + customerName);
+    }
+
+    private static void showMovieNotFound(int movieId) {
+        System.out.println("⚠️ Not found movie with ID: " + movieId);
+    }
+
+    private static void showError(String message) {
+        System.out.println("❌ " + message);
     }
 
     public static void showBookedSeats() {
