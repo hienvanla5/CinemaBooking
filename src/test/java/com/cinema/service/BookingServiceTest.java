@@ -3,14 +3,15 @@ package com.cinema.service;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
-import com.cinema.model.Movie;
 import com.cinema.repository.BookingRepository;
 import com.cinema.repository.FileStorage;
 import com.cinema.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,20 +23,25 @@ public class BookingServiceTest {
     private BookingRepository bookingRepository;
     private MovieRepository movieRepository;
 
+    @TempDir
+    Path tempDir;
+    private String movieFile;
+    private String bookingFile;
+
     @BeforeEach
     void setUp() throws IOException {
-        String testMoviePath = "src/test/resources/data/movies.csv";
-        String testBookingPath = "src/test/resources/data/bookings.csv";
+        movieFile = tempDir.resolve("movies.csv").toString();
+        bookingFile = tempDir.resolve("bookings.csv").toString();
 
         FileStorage fileStorage = new FileStorage();
         List<String> movieLines = Arrays.asList("1|Avengers|180", "2|Titanic|195");
-        fileStorage.writeLines(testMoviePath, movieLines);
+        fileStorage.writeLines(movieFile, movieLines);
 
         List<String> bookingLines = Arrays.asList("1|3|Alice", "1|5|Bob");
-        fileStorage.writeLines(testBookingPath, bookingLines);
+        fileStorage.writeLines(bookingFile, bookingLines);
 
-        movieRepository = new MovieRepository(testMoviePath);
-        bookingRepository = new BookingRepository(testBookingPath);
+        movieRepository = new MovieRepository(movieFile);
+        bookingRepository = new BookingRepository(bookingFile);
         bookingService = new BookingService(bookingRepository, movieRepository);
     }
 

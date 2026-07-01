@@ -4,8 +4,10 @@ import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
 import com.cinema.model.Movie;
+import com.cinema.repository.BookingRepository;
 import com.cinema.repository.MovieRepository;
 import com.cinema.service.BookingService;
+import com.cinema.util.Validator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -13,16 +15,18 @@ import java.util.Scanner;
 public class Main {
 
     private static final MovieRepository movieRepository = new MovieRepository();
-    private static final BookingService bookingService = new BookingService();
+    private static final BookingRepository bookingRepository = new BookingRepository();
+    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository);
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
         while (true) {
             System.out.println("\n===== Welcome to Cinema Booking Application =====");
-            System.out.println("1. View movies");
+            System.out.println("1. View list of movies");
             System.out.println("2. Book a ticket");
-            System.out.println("3. Exit");
+            System.out.println("3. See list of reserved seats");
+            System.out.println("4. Exit");
             System.out.print("Enter your choice: ");
 
             String input = scanner.nextLine();
@@ -42,6 +46,9 @@ public class Main {
                     bookTicket();
                     break;
                 case 3:
+                    showBookedSeats();
+                    break;
+                case 4:
                     System.out.println("Thank you for using the system!");
                     scanner.close();
                     System.exit(0);
@@ -75,7 +82,7 @@ public class Main {
         try {
             movieId = Integer.parseInt(movieIdInput);
         } catch (NumberFormatException e) {
-            System.out.println("⚠️ Movie ID must be a number.");
+            System.out.println("⚠️ Movie ID must be a number. Please re-enter.");
             return;
         }
 
@@ -91,7 +98,7 @@ public class Main {
         try {
             seatId = Integer.parseInt(seatIdInput);
         } catch (NumberFormatException e) {
-            System.out.println("⚠️ Seat ID must be a number.");
+            System.out.println("⚠️ Seat ID must be a number. Please re-enter.");
             return;
         }
 
@@ -100,9 +107,38 @@ public class Main {
 
         try {
             Booking booking = bookingService.bookSeat(movieId, seatId, customerNameInput);
-            System.out.println("🎉 Booking successfully! Ticket id: " + booking.toString());
-        } catch (InvalidInputException | SeatUnavailableException e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println("🎉 Booking successfully!");
+            System.out.println(" Ticket number: The movie " + movie.getTitle() + ", seat number " + seatId + ", customer: " + customerNameInput);
+        } catch (InvalidInputException e) {
+            System.out.println("❌ Error data: " + e.getMessage());
+        } catch (SeatUnavailableException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    public static void showBookedSeats() {
+        showMovies();
+
+        System.out.print("Enter movie ID to see list of reserved seats: ");
+        int movieId;
+        try {
+            movieId = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("⚠️ Movie ID must be number.");
+            return;
+        }
+
+        Movie movie = movieRepository.findById(movieId);
+        if (movie == null) {
+            System.out.println("⚠️ Film not found.");
+            return;
+        }
+
+        List<Integer> bookedSeats = bookingRepository.getBookedSeats(movieId);
+        if (bookedSeats.isEmpty()) {
+            System.out.println("📌 No seats have been booked for this film yet.");
+        } else {
+            System.out.println("🪑 Seats booked for \"" + movie.getTitle() + "\" film: " + bookedSeats);
         }
     }
 }

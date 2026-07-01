@@ -3,7 +3,9 @@ package com.cinema.repository;
 import com.cinema.model.Booking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,11 +14,14 @@ public class BookingRepositoryTest {
 
     private BookingRepository repository;
 
+    @TempDir
+    Path tempDir;
+    private String bookingFile;
+
     @BeforeEach
     void setUp() {
-        String testBookingPath = "src/test/resources/data/bookings.csv";
-
-        repository = new BookingRepository(testBookingPath);
+        bookingFile = tempDir.resolve("bookings.csv").toString();
+        repository = new BookingRepository(bookingFile);
 
         repository.data.clear();
         repository.data.add(new Booking(1, 5, "Alice"));

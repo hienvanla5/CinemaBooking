@@ -3,6 +3,9 @@ package com.cinema.repository;
 import com.cinema.model.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,9 +13,14 @@ public class MovieRepositoryTest {
 
     private MovieRepository repository;
 
+    @TempDir
+    Path tempDir;
+    private String movieFile;
+
     @BeforeEach
     void setUp() {
-        repository = new MovieRepository("src/test/resources/data/movies.csv");
+        movieFile = tempDir.resolve("movies.csv").toString();
+        repository = new MovieRepository(movieFile);
 
         repository.clear();
         repository.data.add(new Movie(1, "Avengers: Endgame", 120));
@@ -84,5 +92,10 @@ public class MovieRepositoryTest {
 
         movie = repository.findByName("");
         assertNull(movie);
+    }
+
+    @Test
+    void testGetMaxSeats() {
+        assertEquals(10, repository.getMaxSeats(1));
     }
 }
