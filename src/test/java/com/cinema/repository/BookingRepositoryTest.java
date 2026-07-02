@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,18 +18,20 @@ public class BookingRepositoryTest {
 
     @TempDir
     Path tempDir;
-    private String bookingFile;
+    private String bookingsFile;
 
     @BeforeEach
-    void setUp() {
-        bookingFile = tempDir.resolve("bookings.csv").toString();
-        repository = new BookingRepository(bookingFile);
+    void setUp() throws IOException {
+        bookingsFile = tempDir.resolve("bookings.csv").toString();
+        FileStorage fileStorage = new FileStorage();
 
-        repository.data.clear();
-        repository.data.add(new Booking(1, 5, "Alice"));
-        repository.data.add(new Booking(1, 10, "Bob"));
-        repository.data.add(new Booking(2, 3, "Charlie"));
-        repository.saveToFile();
+        List<String> lines = Arrays.asList(
+                "1|5|Alice|2026-07-08 09:00:00",
+                "1|10|Bob|2026-07-08 09:05:00",
+                "2|3|Charlie|2026-07-08 09:10:00"
+        );
+        fileStorage.writeLines(bookingsFile, lines);
+        repository = new BookingRepository(bookingsFile);
     }
 
     @Test
@@ -54,15 +58,18 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void testFindByMovieId() {
-        assertEquals(2, repository.findByMovieId(1).size());
-        assertEquals(1, repository.findByMovieId(2).size());
-        assertEquals(0, repository.findByMovieId(3).size());
+    void testFindByShowtimeId() {
+        List<Booking> bookings = repository.findByShowtimeId(1);
+        assertEquals(2, bookings.size());
+        bookings = repository.findByShowtimeId(2);
+        assertEquals(1, bookings.size());
+        bookings = repository.findByShowtimeId(3);
+        assertTrue(bookings.isEmpty());
     }
 
     @Test
-    void testDeleteByMovieAndSeat() {
-        repository.deleteByMovieAndSeat(1, 5);
+    void testDeleteByShowtimeAndSeat() {
+        repository.deleteByShowtimeAndSeat(1, 5);
         assertFalse(repository.isSeatBooked(1, 5));
         assertEquals(2, repository.findAll().size());
     }
@@ -77,14 +84,17 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void testGetBookedSeats() {
-        List<Integer> bookedSeats = repository.getBookedSeats(1);
+    void testGetBookedSeatsByShowtime() {
+        List<Integer> bookedSeats = repository.getBookedSeatsByShowtime(1);
         assertEquals(2, bookedSeats.size());
         assertTrue(bookedSeats.contains(5));
-        assertFalse(bookedSeats.contains(3));
+        assertTrue(bookedSeats.contains(10));
 
-        bookedSeats = repository.getBookedSeats(2);
+        bookedSeats = repository.getBookedSeatsByShowtime(2);
         assertEquals(1, bookedSeats.size());
         assertTrue(bookedSeats.contains(3));
+
+        bookedSeats = repository.getBookedSeatsByShowtime(3);
+        assertTrue(bookedSeats.isEmpty());
     }
 }

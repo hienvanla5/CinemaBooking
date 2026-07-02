@@ -1,21 +1,31 @@
 package com.cinema.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Booking {
 
-    private int movieId;
-
+    private int showtimeId;
     private int seatId;
-
     private String customerName;
+    private String bookingTime;
 
-    public Booking(int movieId, int seatId, String customerName) {
-        this.movieId = movieId;
+    public Booking(int showtimeId, int seatId, String customerName) {
+        this.showtimeId = showtimeId;
         this.seatId = seatId;
         this.customerName = customerName;
+        this.bookingTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public int getMovieId() {
-        return movieId;
+    public Booking(int showtimeId, int seatId, String customerName, String bookingTime) {
+        this.showtimeId = showtimeId;
+        this.seatId = seatId;
+        this.customerName = customerName;
+        this.bookingTime = bookingTime;
+    }
+
+    public int getShowtimeId() {
+        return showtimeId;
     }
 
     public int getSeatId() {
@@ -26,12 +36,17 @@ public class Booking {
         return customerName;
     }
 
+    public String getBookingTime() {
+        return bookingTime;
+    }
+
     @Override
     public String toString() {
         return "Booking{" +
-                "movieId=" + movieId +
+                "showtimeId=" + showtimeId +
                 ", seatId=" + seatId +
                 ", customerName='" + customerName + '\'' +
+                ", bookingTime='" + bookingTime + '\'' +
                 '}';
     }
 }

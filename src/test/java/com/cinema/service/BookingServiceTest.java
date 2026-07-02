@@ -49,7 +49,7 @@ public class BookingServiceTest {
     void testBookSeat_Success_ReturnsBooking() {
         Booking booking = bookingService.bookSeat(1, 7, "Charlie");
         assertNotNull(booking);
-        assertEquals(1, booking.getMovieId());
+        assertEquals(1, booking.getShowtimeId());
         assertEquals(7, booking.getSeatId());
         assertEquals("Charlie", booking.getCustomerName());
     }

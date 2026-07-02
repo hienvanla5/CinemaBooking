@@ -55,12 +55,12 @@ public class SeatRepositoryTest {
 
     @Test
     void updateExisting() {
-        Seat updated = new Seat(1, 2, 40, 30);
+        Seat updated = new Seat(1, 2, 2, 2);
         repository.save(updated);
         Seat found = repository.findById(1);
         assertEquals(2, found.getTheaterId());
-        assertEquals(40, found.getRow());
-        assertEquals(30, found.getColumn());
+        assertEquals(2, found.getRow());
+        assertEquals(2, found.getColumn());
     }
 
     @Test

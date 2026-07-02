@@ -163,7 +163,7 @@ public class Main {
             return;
         }
 
-        List<Integer> bookedSeats = bookingRepository.getBookedSeats(movieId);
+        List<Integer> bookedSeats = bookingRepository.getBookedSeatsByShowtime(movieId);
         if (bookedSeats.isEmpty()) {
             System.out.println("📌 No seats have been booked for this film yet.");
         } else {

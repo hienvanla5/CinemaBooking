@@ -7,9 +7,9 @@ public class BookingTest {
 
     @Test
     void testCreateBooking() {
-        Booking booking = new Booking(5, 2, "Alice");
-        assertEquals(5, booking.getMovieId());
-        assertEquals(2, booking.getSeatId());
+        Booking booking = new Booking(1, 1, "Alice");
+        assertEquals(1, booking.getShowtimeId());
+        assertEquals(1, booking.getSeatId());
         assertEquals("Alice", booking.getCustomerName());
     }
 }

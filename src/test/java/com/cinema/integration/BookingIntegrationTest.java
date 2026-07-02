@@ -56,12 +56,12 @@ public class BookingIntegrationTest {
     void testFullBookingFlow_Success() {
         Booking booking = bookingService.bookSeat(1, 5, "Alice");
         assertNotNull(booking);
-        assertEquals(1, booking.getMovieId());
+        assertEquals(1, booking.getShowtimeId());
         assertEquals(5, booking.getSeatId());
         assertEquals("Alice", booking.getCustomerName());
 
         assertTrue(bookingRepository.isSeatBooked(1, 5));
-        List<Integer> bookedSeats = bookingRepository.getBookedSeats(1);
+        List<Integer> bookedSeats = bookingRepository.getBookedSeatsByShowtime(1);
         assertTrue(bookedSeats.contains(5));
 
         BookingRepository newRepo = new BookingRepository(bookingFile);
@@ -94,7 +94,7 @@ public class BookingIntegrationTest {
 
         assertTrue(bookingRepository.isSeatBooked(1, 7));
         assertTrue(bookingRepository.isSeatBooked(1, 8));
-        assertEquals(2, bookingRepository.getBookedSeats(1).size());
+        assertEquals(2, bookingRepository.getBookedSeatsByShowtime(1).size());
     }
 
     @Test
