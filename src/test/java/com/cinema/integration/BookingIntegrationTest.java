@@ -3,9 +3,8 @@ package com.cinema.integration;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
-import com.cinema.repository.BookingRepository;
-import com.cinema.repository.FileStorage;
-import com.cinema.repository.MovieRepository;
+import com.cinema.model.Theater;
+import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 public class BookingIntegrationTest {
@@ -23,11 +23,17 @@ public class BookingIntegrationTest {
     private BookingService bookingService;
     private BookingRepository bookingRepository;
     private MovieRepository movieRepository;
+    private ShowtimeRepository showtimeRepository;
+    private SeatRepository seatRepository;
+    private TheaterRepository theaterRepository;
 
     @TempDir
     Path tempDir;
     private String movieFile;
     private String bookingFile;
+    private String showtimeFile;
+    private String seatFile;
+    private String theaterFile;
 
 
     @BeforeEach
@@ -36,6 +42,9 @@ public class BookingIntegrationTest {
 
         movieFile = tempDir.resolve("movies.csv").toString();
         bookingFile = tempDir.resolve("bookings.csv").toString();
+        showtimeFile = tempDir.resolve("showtimes.csv").toString();
+        seatFile = tempDir.resolve("seats.csv").toString();
+        theaterFile = tempDir.resolve("theaters.csv").toString();
 
         List<String> movieLines = List.of(
                 "1|Avengers|180",
@@ -43,13 +52,21 @@ public class BookingIntegrationTest {
                 "3|Inception|148"
         );
 
+        List<String> showtimeLines = Arrays.asList("1|2|3|2026-07-02 19:00:00", "2|2|3|2026-07-02 19:00:00", "3|2|3|2026-07-02 19:00:00");
+        fileStorage.writeLines(showtimeFile, showtimeLines);
+        theaterRepository = new TheaterRepository(theaterFile);
+        theaterRepository.save(new Theater(3, "Hall C", 2, 5));
+
+
         fileStorage.writeLines(movieFile, movieLines);
 
         fileStorage.writeLines(bookingFile, List.of());
 
         movieRepository = new MovieRepository(movieFile);
         bookingRepository = new BookingRepository(bookingFile);
-        bookingService = new BookingService(bookingRepository, movieRepository);
+        showtimeRepository = new ShowtimeRepository(showtimeFile);
+        seatRepository = new SeatRepository(seatFile);
+        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
     }
 
     @Test

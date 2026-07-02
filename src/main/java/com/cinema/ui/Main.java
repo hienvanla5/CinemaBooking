@@ -6,6 +6,8 @@ import com.cinema.model.Booking;
 import com.cinema.model.Movie;
 import com.cinema.repository.BookingRepository;
 import com.cinema.repository.MovieRepository;
+import com.cinema.repository.SeatRepository;
+import com.cinema.repository.ShowtimeRepository;
 import com.cinema.service.BookingService;
 
 import java.util.List;
@@ -15,7 +17,9 @@ public class Main {
 
     private static final MovieRepository movieRepository = new MovieRepository();
     private static final BookingRepository bookingRepository = new BookingRepository();
-    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository);
+    private static final ShowtimeRepository showtimeRepository = new ShowtimeRepository();
+    private static final SeatRepository seatRepository = new SeatRepository();
+    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
