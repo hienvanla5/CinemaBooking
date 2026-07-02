@@ -1,5 +1,6 @@
 package com.cinema.repository;
 
+import com.cinema.model.Seat;
 import com.cinema.model.Theater;
 import com.cinema.util.AppConstants;
 
@@ -11,6 +12,7 @@ public class TheaterRepository extends BaseRepository<Theater> {
 
     private final FileStorage fileStorage;
     private final String filePath;
+    private final SeatRepository seatRepository;
 
     public TheaterRepository() {
         this(AppConstants.THEATERS_FILE);
@@ -19,6 +21,9 @@ public class TheaterRepository extends BaseRepository<Theater> {
     public TheaterRepository(String filePath) {
         this.filePath = filePath;
         this.fileStorage = new FileStorage();
+        this.seatRepository = new SeatRepository(
+                filePath.replace("theaters.csv", "seats.csv")
+        );
         loadFromFile();
     }
 
@@ -73,10 +78,15 @@ public class TheaterRepository extends BaseRepository<Theater> {
     @Override
     public void save(Theater theater) {
         Theater existing = findById(theater.getId());
-        if (existing != null) {
+        if (existing == null) {
+            data.add(theater);
+            saveToFile();
+            initializeSeats(theater);
+        } else {
             data.remove(existing);
+            data.add(theater);
+            saveToFile();
         }
-        data.add(theater);
         saveToFile();
     }
 
@@ -85,6 +95,23 @@ public class TheaterRepository extends BaseRepository<Theater> {
         boolean removed = data.removeIf(t -> t.getId() == id);
         if (removed) {
             saveToFile();
+        }
+    }
+
+    private void initializeSeats(Theater theater) {
+        int idCounter = 1;
+
+        for (Seat seat : seatRepository.findAll()) {
+            if (seat.getId() >= idCounter) {
+                idCounter = seat.getId() + 1;
+            }
+        }
+
+        for (int row = 1; row <= theater.getTotalRows(); row++) {
+            for (int col = 1; col <= theater.getTotalColumns(); col++) {
+                Seat seat = new Seat(idCounter++, theater.getId(), row, col);
+                seatRepository.save(seat);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.cinema.repository;
 
+import com.cinema.model.Seat;
 import com.cinema.model.Theater;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class TheaterRepositoryTest {
 
@@ -22,34 +24,44 @@ public class TheaterRepositoryTest {
         repository = new TheaterRepository(theaterFile);
 
         repository.clear();
-        repository.data.add(new Theater(1, "Hall A", 10, 10));
-        repository.data.add(new Theater(2, "Hall B", 20, 25));
         repository.saveToFile();
     }
 
     @Test
-    void testLoadFromFile() {
-        assertEquals(2, repository.findAll().size());
+    void testLoadFromFile() {Theater theater1 = new Theater(1, "Hall A", 2, 3);
+        Theater theater2 = new Theater(2, "Hall B", 2, 3);
+        Theater theater3 = new Theater(3, "Hall C", 3, 4);
+        repository.save(theater1);
+        repository.save(theater2);
+        repository.save(theater3);
+        assertEquals(3, repository.findAll().size());
         assertEquals("Hall B", repository.findById(2).getName());
     }
 
     @Test
     void testFindById() {
-        Theater theater = repository.findById(2);
-        assertEquals("Hall B", theater.getName());
-        assertEquals(20, theater.getTotalRows());
-        assertEquals(25, theater.getTotalColumns());
+        Theater theater = new Theater(2, "Hall B", 1, 2);
+        repository.save(theater);
+
+        Theater found = repository.findById(2);
+        assertEquals("Hall B", found.getName());
+        assertEquals(1, found.getTotalRows());
+        assertEquals(2, found.getTotalColumns());
     }
 
     @Test
     void testSaveNew() {
-        Theater theater = new Theater(3, "Hall C", 50, 50);
-        repository.save(theater);
+        Theater theater1 = new Theater(1, "Hall A", 2, 3);
+        Theater theater2 = new Theater(2, "Hall B", 2, 3);
+        Theater theater3 = new Theater(3, "Hall C", 3, 4);
+        repository.save(theater1);
+        repository.save(theater2);
+        repository.save(theater3);
         assertNotNull(repository.findById(3));
         assertEquals(3, repository.findAll().size());
         assertEquals("Hall C", repository.findById(3).getName());
-        assertEquals(50, repository.findById(3).getTotalRows());
-        assertEquals(50, repository.findById(3).getTotalColumns());
+        assertEquals(3, repository.findById(3).getTotalRows());
+        assertEquals(4, repository.findById(3).getTotalColumns());
     }
 
     @Test
@@ -62,10 +74,28 @@ public class TheaterRepositoryTest {
 
     @Test
     void testDelete() {
+        Theater theater1 = new Theater(1, "Hall A", 2, 3);
+        Theater theater2 = new Theater(2, "Hall B", 2, 3);
+        repository.save(theater1);
+        repository.save(theater2);
         repository.delete(1);
         assertNull(repository.findById(1));
         assertEquals(1, repository.findAll().size());
     }
 
+    @Test
+    void testInitializeSeatsWhenAddingNewTheater() {
+        TheaterRepository theaterRepo = new TheaterRepository(theaterFile);
+        Theater theater = new Theater(1, "Hall A", 2, 3);
+        theaterRepo.save(theater);
 
+        SeatRepository seatRepo = new SeatRepository(
+                theaterFile.replace("theaters.csv", "seats.csv")
+        );
+        List<Seat> seats = seatRepo.findByTheaterId(1);
+        assertEquals(6, seats.size());
+        Seat firstSeat = seats.get(0);
+        assertEquals(1, firstSeat.getRow());
+        assertEquals(1, firstSeat.getColumn());
+    }
 }

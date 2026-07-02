@@ -7,4 +7,5 @@ public class AppConstants {
     public static final String BOOKINGS_FILE = "src/main/resources/data/bookings.csv";
     public static final String THEATERS_FILE = "src/main/resources/data/theaters.csv";
     public static final String SHOWTIMES_FILE = "src/main/resources/data/showtimes.csv";
+    public static final String SEATS_FILE = "src/main/resources/data/seats.csv";
 }

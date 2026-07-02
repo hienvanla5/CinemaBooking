@@ -7,16 +7,10 @@ public class SeatTest {
 
     @Test
     void testCreateSeat() {
-        Seat seat = new Seat(10);
-        assertEquals(10, seat.getId());
-        assertFalse(seat.isBooked());
-    }
-
-    @Test
-    void testSetBooked() {
-        Seat seat = new Seat(5);
-        assertFalse(seat.isBooked());
-        seat.setBooked(true);
-        assertTrue(seat.isBooked());
+        Seat seat = new Seat(1, 2, 5, 3);
+        assertEquals(1, seat.getId());
+        assertEquals(2, seat.getTheaterId());
+        assertEquals(5, seat.getRow());
+        assertEquals(3, seat.getColumn());
     }
 }
