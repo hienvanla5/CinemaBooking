@@ -30,6 +30,18 @@ public class Theater {
         return totalColumns;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTotalRows(int totalRows) {
+        this.totalRows = totalRows;
+    }
+
+    public void setTotalColumns(int totalColumns) {
+        this.totalColumns = totalColumns;
+    }
+
     @Override
     public String toString() {
         return "Theater{" +
