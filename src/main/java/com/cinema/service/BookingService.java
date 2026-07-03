@@ -12,6 +12,7 @@ import com.cinema.repository.ShowtimeRepository;
 import com.cinema.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ public class BookingService {
     private final SeatRepository seatRepository;
 
     private final Object lock = new Object();
+
+    private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
 
     public BookingService() {
         this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository());
@@ -48,15 +51,25 @@ public class BookingService {
 
         synchronized (lock) {
             // synchronize START
-            if (bookingRepository.isSeatBooked(showtimeId, seatId)) {
+            boolean booked = bookingRepository.isSeatBooked(showtimeId, seatId) || pendingBookings.stream().anyMatch(b -> b.getShowtimeId() == showtimeId && b.getSeatId() == seatId);
+            if (booked) {
                 throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
             }
 
             Booking booking = new Booking(showtimeId, seatId, customerName);
-            bookingRepository.save(booking);
+            pendingBookings.add(booking);
             // END
 
             return booking;
+        }
+    }
+
+    public synchronized void flushBookings() {
+        if (!pendingBookings.isEmpty()) {
+            List<Booking> toSave = new ArrayList<>(pendingBookings);
+            bookingRepository.saveAll(toSave);
+            pendingBookings.clear();
+            System.out.println("💾 Flushed " + toSave.size() + " bookings to file.");
         }
     }
 

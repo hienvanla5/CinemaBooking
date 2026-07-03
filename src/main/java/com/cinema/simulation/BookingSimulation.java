@@ -55,6 +55,7 @@ public class BookingSimulation {
             Thread.currentThread().interrupt();
         }
 
+        bookingService.flushBookings();
         return new SimulationResult(successCount.get(), failureCount.get());
     }
 

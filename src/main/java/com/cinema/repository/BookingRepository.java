@@ -107,4 +107,9 @@ public class BookingRepository extends BaseRepository<Booking> {
                 .map(Booking::getSeatId)
                 .collect(Collectors.toList());
     }
+
+    public void saveAll(List<Booking> bookings) {
+        data.addAll(bookings);
+        saveToFile();
+    }
 }

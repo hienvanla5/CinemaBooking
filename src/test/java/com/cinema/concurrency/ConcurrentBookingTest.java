@@ -100,6 +100,8 @@ public class ConcurrentBookingTest {
 
         endLatch.await();
 
+        bookingService.flushBookings();
+        assertTrue(bookingRepository.isSeatBooked(showtimeId, seatId));
         assertEquals(1, successCount.get(), "Only 1 user booked successfully");
         assertEquals(numberOfThreads - 1,  failureCount.get(), "9 users failed books");
     }
@@ -143,6 +145,8 @@ public class ConcurrentBookingTest {
 
         startLatch.countDown();
         endLatch.await();
+
+        bookingService.flushBookings();
 
         assertEquals(numberOfThreads, successCount.get(), "All 10 users booked successfully");
         assertEquals(0, failureCount.get(), "No such user failed booked");

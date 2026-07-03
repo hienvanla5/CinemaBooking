@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,5 +97,19 @@ public class BookingRepositoryTest {
 
         bookedSeats = repository.getBookedSeatsByShowtime(3);
         assertTrue(bookedSeats.isEmpty());
+    }
+
+    @Test
+    void testSaveAll() {
+        List<Booking> bookings = new ArrayList<>();
+        Booking newBooking1 = new Booking(3, 7, "David");
+        Booking newBooking2 = new Booking(3, 8, "David");
+        Booking newBooking3 = new Booking(3, 9, "David");
+        bookings.add(newBooking1);
+        bookings.add(newBooking2);
+        bookings.add(newBooking3);
+        repository.saveAll(bookings);
+        assertEquals(6, repository.findAll().size());
+        assertTrue(repository.isSeatBooked(3, 7));
     }
 }
