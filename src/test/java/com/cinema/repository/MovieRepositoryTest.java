@@ -93,9 +93,4 @@ public class MovieRepositoryTest {
         movie = repository.findByName("");
         assertNull(movie);
     }
-
-    @Test
-    void testGetMaxSeats() {
-        assertEquals(10, repository.getMaxSeats(1));
-    }
 }

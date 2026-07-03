@@ -1,8 +1,5 @@
 package com.cinema.ui;
 
-import com.cinema.exception.InvalidInputException;
-import com.cinema.exception.SeatUnavailableException;
-import com.cinema.model.Booking;
 import com.cinema.model.Movie;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;

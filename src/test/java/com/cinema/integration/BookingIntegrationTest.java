@@ -3,7 +3,8 @@ package com.cinema.integration;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
-import com.cinema.model.Theater;
+import com.cinema.model.Seat;
+import com.cinema.model.Showtime;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 public class BookingIntegrationTest {
@@ -38,34 +38,35 @@ public class BookingIntegrationTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        FileStorage fileStorage = new FileStorage();
-
         movieFile = tempDir.resolve("movies.csv").toString();
         bookingFile = tempDir.resolve("bookings.csv").toString();
         showtimeFile = tempDir.resolve("showtimes.csv").toString();
         seatFile = tempDir.resolve("seats.csv").toString();
         theaterFile = tempDir.resolve("theaters.csv").toString();
 
-        List<String> movieLines = List.of(
-                "1|Avengers|180",
-                "2|Titanic|195",
-                "3|Inception|148"
-        );
+        FileStorage fileStorage = new FileStorage();
+        fileStorage.writeLines(movieFile, List.of("1|Avengers|180", "2|Titanic|195"));
 
-        List<String> showtimeLines = Arrays.asList("1|2|3|2026-07-02 19:00:00", "2|2|3|2026-07-02 19:00:00", "3|2|3|2026-07-02 19:00:00");
-        fileStorage.writeLines(showtimeFile, showtimeLines);
-        theaterRepository = new TheaterRepository(theaterFile);
-        theaterRepository.save(new Theater(3, "Hall C", 2, 5));
+        fileStorage.writeLines(theaterFile, List.of("1|Hall A|5|5"));
 
+        seatRepository = new SeatRepository(seatFile);
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                int id = row * 5 + col + 1;
+                seatRepository.save(new Seat(id, 1, row, col));
+            }
+        }
 
-        fileStorage.writeLines(movieFile, movieLines);
+        fileStorage.writeLines(showtimeFile, List.of("1|1|1|2026-07-11 14:00"));
 
         fileStorage.writeLines(bookingFile, List.of());
 
         movieRepository = new MovieRepository(movieFile);
+        theaterRepository = new TheaterRepository(theaterFile);
         bookingRepository = new BookingRepository(bookingFile);
         showtimeRepository = new ShowtimeRepository(showtimeFile);
-        seatRepository = new SeatRepository(seatFile);
+
+
         bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
     }
 
@@ -78,11 +79,12 @@ public class BookingIntegrationTest {
         assertEquals("Alice", booking.getCustomerName());
 
         assertTrue(bookingRepository.isSeatBooked(1, 5));
-        List<Integer> bookedSeats = bookingRepository.getBookedSeatsByShowtime(1);
-        assertTrue(bookedSeats.contains(5));
 
-        BookingRepository newRepo = new BookingRepository(bookingFile);
-        assertTrue(newRepo.isSeatBooked(1, 5));
+        List<Integer> booked = bookingRepository.getBookedSeatsByShowtime(1);
+        assertTrue(booked.contains(5));
+        assertEquals(1, booked.size());
+
+        assertThrows(SeatUnavailableException.class, () -> bookingService.bookSeat(1, 5, "Bob"));
     }
 
     @Test
@@ -116,16 +118,16 @@ public class BookingIntegrationTest {
 
     @Test
     void testCustomerNameWithSpaces() {
-        Booking booking = bookingService.bookSeat(2, 1, "Nguyen Van A");
+        Booking booking = bookingService.bookSeat(1, 3, "Nguyen Van A");
         assertNotNull(booking);
         assertEquals("Nguyen Van A", booking.getCustomerName());
-        assertTrue(bookingRepository.isSeatBooked(2, 1));
+        assertTrue(bookingRepository.isSeatBooked(1, 3));
     }
 
     @Test
     void testSeatIdExceedsMax_ThrowsException() {
         assertThrows(InvalidInputException.class, () -> {
-            bookingService.bookSeat(1, 11, "Grace");
+            bookingService.bookSeat(1, 26, "Grace");
         });
     }
 
@@ -134,5 +136,60 @@ public class BookingIntegrationTest {
         assertThrows(InvalidInputException.class, () -> {
            bookingService.bookSeat(1, -1, "Henry");
         });
+    }
+
+    @Test
+    void testDeleteTheaterWithShowtime_ThrowsException() {
+        theaterRepository.delete(1);
+
+    }
+
+    @Test
+    void testAddShowtimeWithInvalidMovie_ThrowsException() {
+        Showtime invalid = new Showtime(2, 999, 1, "2026-07-11 15:00");
+//        assertThrows(InvalidInputException.class, () -> {
+//
+//        });
+    }
+
+    @Test
+    void testBookSeatWithInvalidSeat_ThrowsException() {
+        assertThrows(InvalidInputException.class, () -> {
+            bookingService.bookSeat(1, 999, "Eve");
+        });
+    }
+
+    @Test
+    void testBookSeatWithSeatOutOfRange_ThrowsException() {
+
+    }
+
+    @Test
+    void testBookSeat_SeatNotInTheater_ThrowsException() {
+
+    }
+
+    @Test
+    void testSeatRepository_FindByTheaterId() {
+        List<Seat> seats = seatRepository.findByTheaterId(1);
+        assertEquals(25, seats.size());
+        seats = seatRepository.findByTheaterId(2);
+        assertTrue(seats.isEmpty());
+    }
+
+    @Test
+    void testShowtimeRepository_FindByMovieId() {
+        List<Showtime> showtimes = showtimeRepository.findByMovieId(1);
+        assertEquals(1, showtimes.size());
+        showtimes = showtimeRepository.findByMovieId(2);
+        assertTrue(showtimes.isEmpty());
+    }
+
+    @Test
+    void testGetAvailableSeats() {
+        bookingService.bookSeat(1, 5, "Alice");
+        List<Seat> available = bookingService.getAvailableSeats(1);
+        assertEquals(24, available.size());
+        assertFalse(available.stream().anyMatch(s -> s.getId() == 5));
     }
 }

@@ -101,10 +101,6 @@ public class MovieRepository extends BaseRepository<Movie> {
         }
     }
 
-    public int getMaxSeats(int movieId) {
-        return AppConstants.DEFAULT_MAX_SEATS;
-    }
-
     public Movie findByName(String title) {
         if (title == null || title.trim().isEmpty()) {
             return null;
