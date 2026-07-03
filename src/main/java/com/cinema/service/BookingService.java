@@ -14,6 +14,7 @@ import com.cinema.util.Validator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class BookingService {
@@ -23,7 +24,7 @@ public class BookingService {
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
 
-    private final Object lock = new Object();
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
 
@@ -49,7 +50,8 @@ public class BookingService {
 
         Validator.validateSeatInTheater(seatId, theaterId, seatRepository);
 
-        synchronized (lock) {
+        lock.lock();
+        try {
             // synchronize START
             boolean booked = bookingRepository.isSeatBooked(showtimeId, seatId) || pendingBookings.stream().anyMatch(b -> b.getShowtimeId() == showtimeId && b.getSeatId() == seatId);
             if (booked) {
@@ -61,6 +63,8 @@ public class BookingService {
             // END
 
             return booking;
+        } finally {
+            lock.unlock();
         }
     }
 
