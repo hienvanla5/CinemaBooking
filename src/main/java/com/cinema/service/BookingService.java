@@ -22,6 +22,8 @@ public class BookingService {
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
 
+    private final Object lock = new Object();
+
     public BookingService() {
         this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository());
     }
@@ -44,13 +46,18 @@ public class BookingService {
 
         Validator.validateSeatInTheater(seatId, theaterId, seatRepository);
 
-        if (bookingRepository.isSeatBooked(showtimeId, seatId)) {
-            throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
-        }
+        synchronized (lock) {
+            // synchronize START
+            if (bookingRepository.isSeatBooked(showtimeId, seatId)) {
+                throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
+            }
 
-        Booking booking = new Booking(showtimeId, seatId, customerName);
-        bookingRepository.save(booking);
-        return booking;
+            Booking booking = new Booking(showtimeId, seatId, customerName);
+            bookingRepository.save(booking);
+            // END
+
+            return booking;
+        }
     }
 
     public List<Seat> getAvailableSeats(int showtimeId) {
