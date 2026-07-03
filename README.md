@@ -35,3 +35,60 @@
 - Code được viết theo hướng Clean Code, có phân tầng rõ ràng.
 - Tất cả test đều pass.
 - Sẵn sàng cho Tuần 3: Quản lý Theater và Showtime.
+
+## Tuần 3 (06/07 – 12/07): Mở rộng CRUD & Quan hệ
+
+### ✅ Đã hoàn thành
+
+- **Model mới:** `Theater`, `Showtime`, `Seat` (refactor)
+- **Repository mới:** `TheaterRepository`, `ShowtimeRepository`, `SeatRepository`
+- **Refactor:**
+    - `Booking` thay `movieId` → `showtimeId`, thêm `bookingTime`
+    - `BookingRepository` cập nhật định dạng file, thêm `getBookedSeatsByShowtime()`
+- **Validator:** Thêm `validateShowtime`, `validateSeatInTheater`
+- **BookingService:**
+    - Đổi tham số `bookSeat(showtimeId, seatId, customerName)`
+    - Thêm `getAvailableSeats(showtimeId)`
+- **Menu:** Thêm quản lý Theater, Showtime (CRUD)
+- **Test:** Integration test, coverage > 70%
+
+### 📊 Sơ đồ quan hệ Entity
+
+\`\`\`mermaid
+erDiagram
+MOVIE {
+int id PK
+string title
+int duration
+}
+THEATER {
+int id PK
+string name
+int totalRows
+int totalColumns
+}
+SEAT {
+int id PK
+int theaterId FK
+int row
+int column
+}
+SHOWTIME {
+int id PK
+int movieId FK
+int theaterId FK
+string startTime
+}
+BOOKING {
+int showtimeId FK
+int seatId FK
+string customerName
+string bookingTime
+}
+
+    MOVIE ||--o{ SHOWTIME : "có"
+    THEATER ||--o{ SEAT : "chứa"
+    THEATER ||--o{ SHOWTIME : "tổ chức"
+    SHOWTIME ||--o{ BOOKING : "có"
+    SEAT ||--o{ BOOKING : "được đặt"
+\`\`\`
