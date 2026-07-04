@@ -1,6 +1,5 @@
 package com.cinema.concurrency;
 
-import com.cinema.context.AppContext;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.factory.RegularBookingFactory;
@@ -9,8 +8,6 @@ import com.cinema.repository.*;
 import com.cinema.service.BookingManager;
 import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.cinema.service.BookingValidator;
 import com.cinema.simulation.BookingSimulation;
 import com.cinema.util.FileStorage;
@@ -24,6 +21,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConcurrentBookingTest {
 
@@ -41,7 +41,7 @@ public class ConcurrentBookingTest {
         String movieFile = tempDir.resolve("movies.csv").toString();
         String theaterFile = tempDir.resolve("theaters.csv").toString();
         String seatFile = tempDir.resolve("seats.csv").toString();
-        String showtimeFile =  tempDir.resolve("showtimes.csv").toString();
+        String showtimeFile = tempDir.resolve("showtimes.csv").toString();
         String bookingFile = tempDir.resolve("bookings.csv").toString();
 
         FileStorage.getInstance().writeLines(movieFile, List.of("1|Avengers|180"));
@@ -120,7 +120,7 @@ public class ConcurrentBookingTest {
         bookingService.flushBookings();
         assertTrue(bookingRepository.isSeatBooked(showtimeId, seatId));
         assertEquals(1, successCount.get(), "Only 1 user booked successfully");
-        assertEquals(numberOfThreads - 1,  failureCount.get(), "9 users failed books");
+        assertEquals(numberOfThreads - 1, failureCount.get(), "9 users failed books");
     }
 
     @Test
@@ -140,23 +140,23 @@ public class ConcurrentBookingTest {
             final int userId = i + 1;
             final int seatId = seatIds[i];
             new Thread(() -> {
-               try {
-                   startLatch.await();
-                   bookingService.bookSeat(showtimeId, seatId, "User-" + userId);
-                   successCount.incrementAndGet();
-                   System.out.println("✅ User-" + userId + " booked seat " + seatId + " success.");
-               } catch (SeatUnavailableException e) {
-                   failureCount.incrementAndGet();
-                   System.out.println("❌ User-" + userId + "failed (seat already booked).");
-               } catch (InvalidInputException e) {
-                   failureCount.incrementAndGet();
-                   System.out.println("⚠️ User-" + userId + " error data: " + e.getMessage());
-               } catch (Exception e) {
-                   failureCount.incrementAndGet();
-                   System.out.println("💥 User-" + userId + " error: " + e.getMessage());
-               } finally {
-                   endLatch.countDown();
-               }
+                try {
+                    startLatch.await();
+                    bookingService.bookSeat(showtimeId, seatId, "User-" + userId);
+                    successCount.incrementAndGet();
+                    System.out.println("✅ User-" + userId + " booked seat " + seatId + " success.");
+                } catch (SeatUnavailableException e) {
+                    failureCount.incrementAndGet();
+                    System.out.println("❌ User-" + userId + "failed (seat already booked).");
+                } catch (InvalidInputException e) {
+                    failureCount.incrementAndGet();
+                    System.out.println("⚠️ User-" + userId + " error data: " + e.getMessage());
+                } catch (Exception e) {
+                    failureCount.incrementAndGet();
+                    System.out.println("💥 User-" + userId + " error: " + e.getMessage());
+                } finally {
+                    endLatch.countDown();
+                }
             }).start();
         }
 
@@ -233,28 +233,32 @@ public class ConcurrentBookingTest {
 
         // valid -> success
         new Thread(() ->
-            runBooking(showtimeId, validSeat1, "User1", startLatch, endLatch, success, invalidInput, seatUnavailable)
+                runBooking(showtimeId, validSeat1, "User1", startLatch, endLatch, success, invalidInput, seatUnavailable)
         ).start();
 
         // booking same seatId1 ->  SeatUnavailable
         new Thread(() ->
-            runBooking(showtimeId, validSeat1, "User2", startLatch, endLatch, success, invalidInput, seatUnavailable)
-        ).start();;
+                runBooking(showtimeId, validSeat1, "User2", startLatch, endLatch, success, invalidInput, seatUnavailable)
+        ).start();
+        ;
 
         //  seat not exist -> InvalidInputException
         new Thread(() ->
-            runBooking(showtimeId, invalidSeat, "User3", startLatch, endLatch, success, invalidInput, seatUnavailable)
-        ).start();;
+                runBooking(showtimeId, invalidSeat, "User3", startLatch, endLatch, success, invalidInput, seatUnavailable)
+        ).start();
+        ;
 
         // showtime not exist -> InvalidInputException
         new Thread(() ->
-            runBooking(invalidShowtime, 1, "User4", startLatch, endLatch, success, invalidInput, seatUnavailable)
-        ).start();;
+                runBooking(invalidShowtime, 1, "User4", startLatch, endLatch, success, invalidInput, seatUnavailable)
+        ).start();
+        ;
 
         // booking different seat -> success
         new Thread(() -> {
             runBooking(showtimeId, validSeat2, "User5", startLatch, endLatch, success, invalidInput, seatUnavailable);
-        }).start();;
+        }).start();
+        ;
 
         startLatch.countDown();
         endLatch.await();
@@ -285,8 +289,8 @@ public class ConcurrentBookingTest {
     void testWithRealFile() throws InterruptedException, IOException {
         String realMovieFile = "src/test/resources/data/movies.csv";
         String realTheaterFile = "src/test/resources/data/theaters.csv";
-        String realSeatFile =  "src/test/resources/data/seats.csv";
-        String realShowtimeFile =  "src/test/resources/data/showtimes.csv";
+        String realSeatFile = "src/test/resources/data/seats.csv";
+        String realShowtimeFile = "src/test/resources/data/showtimes.csv";
         String realBookingFile = "src/test/resources/data/bookings.csv";
 
         FileStorage.getInstance().writeLines(realMovieFile, List.of("1|Avengers|180"));

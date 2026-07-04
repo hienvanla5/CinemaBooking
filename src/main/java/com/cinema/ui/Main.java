@@ -1,20 +1,20 @@
 package com.cinema.ui;
 
 import com.cinema.context.AppContext;
-import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Movie;
 import com.cinema.model.Showtime;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 import com.cinema.simulation.BookingSimulation;
-import com.cinema.strategy.NormalPricingStrategy;
-import com.cinema.strategy.PriceCalculator;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
     private static final MovieRepository movieRepository = new MovieRepository();
     private static final TheaterRepository theaterRepository = new TheaterRepository();
     private static final BookingRepository bookingRepository = new BookingRepository();
@@ -22,10 +22,6 @@ public class Main {
     private static final SeatRepository seatRepository = new SeatRepository();
     private static final BookingService bookingService = AppContext.getInstance().getBookingService();
     private static final Scanner scanner = new Scanner(System.in);
-
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_RESET = "\u001B[0m";
 
     public static void main(String[] args) {
         TheaterUI theaterUI = new TheaterUI(theaterRepository, seatRepository, scanner);

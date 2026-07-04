@@ -1,5 +1,10 @@
 package com.cinema.model;
 
+/**
+ * Represents a movie showtime in a theater.
+ * A showtime links a movie to a theater and specifies
+ * the scheduled start time.
+ */
 public class Showtime {
 
     private int id;

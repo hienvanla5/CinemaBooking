@@ -1,5 +1,9 @@
 package com.cinema.model;
 
+/**
+ * Represents a movie that can be shown in the cinema.
+ * A movie contains its unique identifier, title, and duration.
+ */
 public class Movie {
 
     private int id;

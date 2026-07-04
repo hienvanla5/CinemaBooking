@@ -11,10 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MovieRepositoryTest {
 
-    private MovieRepository repository;
-
     @TempDir
     Path tempDir;
+    private MovieRepository repository;
     private String movieFile;
 
     @BeforeEach
@@ -78,7 +77,8 @@ public class MovieRepositoryTest {
 
     }
 
-    @Test void testFindByName() {
+    @Test
+    void testFindByName() {
         Movie movie = repository.findByName("avengers");
         assertNotNull(movie);
         assertEquals("Avengers: Endgame", movie.getTitle());

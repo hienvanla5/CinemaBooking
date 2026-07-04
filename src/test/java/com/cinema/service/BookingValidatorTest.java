@@ -8,7 +8,6 @@ import com.cinema.repository.SeatRepository;
 import com.cinema.repository.ShowtimeRepository;
 import com.cinema.repository.TheaterRepository;
 import com.cinema.util.FileStorage;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -17,16 +16,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class BookingValidatorTest {
 
+    @TempDir
+    Path tempDir;
     private BookingValidator validator;
     private SeatRepository seatRepository;
     private ShowtimeRepository showtimeRepository;
     private TheaterRepository theaterRepository;
     private MovieRepository movieRepository;
-
-    @TempDir
-    Path tempDir;
     private String seatFile;
     private String showtimeFile;
     private String theaterFile;
@@ -71,10 +71,10 @@ public class BookingValidatorTest {
     @Test
     void testValidateBooking_InvalidCustomer() throws Exception {
         assertThrows(InvalidInputException.class, () ->
-                validator.validateBooking(1, 5 , "")
+                validator.validateBooking(1, 5, "")
         );
         assertThrows(InvalidInputException.class, () ->
-                validator.validateBooking(1, 5 , null)
+                validator.validateBooking(1, 5, null)
         );
     }
 

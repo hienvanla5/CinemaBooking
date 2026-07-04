@@ -12,6 +12,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Manages the booking process before bookings are persisted.
+ * <p>
+ * This class is responsible for preventing duplicate bookings,
+ * calculating ticket prices, creating booking objects, and temporarily
+ * storing bookings until they are flushed to the repository.
+ * Thread safety is ensured using a {@link ReentrantLock}.
+ */
 public class BookingManager {
 
     private final BookingRepository bookingRepository;
@@ -20,35 +28,72 @@ public class BookingManager {
     private final ReentrantLock lock = new ReentrantLock(true);
     private BookingPriceService bookingPriceService;
 
-    public BookingManager(BookingRepository bookingRepository, BookingFactory bookingFactory, BookingPriceService bookingPriceService) {
+    /**
+     * Creates a booking manager.
+     *
+     * @param bookingRepository the repository used to check and persist bookings
+     * @param bookingFactory the factory used to create booking objects
+     * @param bookingPriceService the service used to calculate ticket prices
+     */
+    public BookingManager(BookingRepository bookingRepository,
+                          BookingFactory bookingFactory,
+                          BookingPriceService bookingPriceService) {
         this.bookingRepository = bookingRepository;
         this.bookingFactory = bookingFactory;
         this.bookingPriceService = bookingPriceService;
     }
 
+    /**
+     * Creates a pending booking if the requested seat is available.
+     * <p>
+     * The booking process is protected by a lock to ensure that multiple
+     * threads cannot reserve the same seat simultaneously.
+     *
+     * @param showtime the selected showtime
+     * @param seat the selected seat
+     * @param customerName the customer's name
+     * @return the created booking
+     * @throws SeatUnavailableException if the seat has already been booked
+     */
     public Booking addPendingBooking(Showtime showtime, Seat seat, String customerName) {
         lock.lock();
+
         try {
             boolean booked = bookingRepository.isSeatBooked(showtime.getId(), seat.getId())
-                    || pendingBookings.stream().anyMatch(b -> b.getShowtimeId() == showtime.getId()
-                    && b.getSeatId() == seat.getId());
+                    || pendingBookings.stream()
+                    .anyMatch(b -> b.getShowtimeId() == showtime.getId()
+                            && b.getSeatId() == seat.getId());
 
             if (booked) {
-                throw new SeatUnavailableException("Seat" + seat.getId() + " is already booked.");
+                throw new SeatUnavailableException(
+                        "Seat " + seat.getId() + " is already booked."
+                );
             }
 
             double price = bookingPriceService.calculatePrice(showtime, seat);
 
-            Booking booking = bookingFactory.createBooking(showtime.getId(), seat.getId(), customerName, price);
+            Booking booking = bookingFactory.createBooking(
+                    showtime.getId(),
+                    seat.getId(),
+                    customerName,
+                    price
+            );
 
             pendingBookings.add(booking);
 
             return booking;
+
         } finally {
             lock.unlock();
         }
     }
 
+    /**
+     * Persists all pending bookings to the repository and clears the
+     * pending booking list.
+     * <p>
+     * If there are no pending bookings, this method does nothing.
+     */
     public synchronized void flushBookings() {
 
         if (!pendingBookings.isEmpty()) {
@@ -58,7 +103,7 @@ public class BookingManager {
 
             pendingBookings.clear();
 
-            System.out.println("💾 Flushed " + toSave.size() + " bookings to file.");
+            System.out.println("💾 Saved " + toSave.size() + " booking(s) to the file.");
         }
     }
 }

@@ -8,6 +8,14 @@ import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
 import com.cinema.service.BookingValidator;
 
+/**
+ * Singleton application context responsible for creating and managing
+ * shared instances of repositories, services, and factories.
+ * <p>
+ * This class performs manual dependency injection, ensuring that
+ * application components share the same instances throughout the
+ * application's lifecycle.
+ */
 public class AppContext {
 
     private static final AppContext INSTANCE = new AppContext();
@@ -25,6 +33,13 @@ public class AppContext {
     private final BookingManager bookingManager;
     private final BookingService bookingService;
 
+    /**
+     * Creates and initializes all application components.
+     * <p>
+     * This constructor is private to enforce the Singleton pattern.
+     * All repositories, factories, and services are created once and
+     * reused during the application's lifetime.
+     */
     private AppContext() {
 
         movieRepository = new MovieRepository();
@@ -37,7 +52,11 @@ public class AppContext {
 
         bookingValidator = new BookingValidator(showtimeRepository, seatRepository);
         bookingPriceService = new BookingPriceService();
-        bookingManager = new BookingManager(bookingRepository, bookingFactory, bookingPriceService);
+        bookingManager = new BookingManager(
+                bookingRepository,
+                bookingFactory,
+                bookingPriceService
+        );
 
         bookingService = new BookingService(
                 bookingRepository,

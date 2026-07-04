@@ -1,5 +1,10 @@
 package com.cinema.model;
 
+/**
+ * Represents a theater where movies are screened.
+ * A theater has a unique identifier, a name, and a seating layout
+ * defined by the number of rows and columns.
+ */
 public class Theater {
 
     private int id;
@@ -22,20 +27,20 @@ public class Theater {
         return name;
     }
 
-    public int getTotalRows() {
-        return totalRows;
-    }
-
-    public int getTotalColumns() {
-        return totalColumns;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public int getTotalRows() {
+        return totalRows;
+    }
+
     public void setTotalRows(int totalRows) {
         this.totalRows = totalRows;
+    }
+
+    public int getTotalColumns() {
+        return totalColumns;
     }
 
     public void setTotalColumns(int totalColumns) {

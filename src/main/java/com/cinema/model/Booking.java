@@ -3,6 +3,11 @@ package com.cinema.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a movie ticket booking made by a customer.
+ * A booking stores information about the showtime, seat,
+ * customer, booking time, VIP information, discount, and final price.
+ */
 public class Booking {
 
     private int showtimeId;
@@ -27,7 +32,8 @@ public class Booking {
         this.bookingTime = bookingTime;
     }
 
-    public Booking(int showtimeId, int seatId, String customerName, int vipLevel, double discount, double price) {
+    public Booking(int showtimeId, int seatId, String customerName,
+                   int vipLevel, double discount, double price) {
         this.showtimeId = showtimeId;
         this.seatId = seatId;
         this.customerName = customerName;

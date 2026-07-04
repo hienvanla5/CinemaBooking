@@ -2,7 +2,6 @@ package com.cinema.repository;
 
 import com.cinema.model.Seat;
 import com.cinema.model.Theater;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -10,12 +9,13 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.List;
 
-public class TheaterRepositoryTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private TheaterRepository repository;
+public class TheaterRepositoryTest {
 
     @TempDir
     Path tempDir;
+    private TheaterRepository repository;
     private String theaterFile;
 
     @BeforeEach
@@ -28,7 +28,8 @@ public class TheaterRepositoryTest {
     }
 
     @Test
-    void testLoadFromFile() {Theater theater1 = new Theater(1, "Hall A", 2, 3);
+    void testLoadFromFile() {
+        Theater theater1 = new Theater(1, "Hall A", 2, 3);
         Theater theater2 = new Theater(2, "Hall B", 2, 3);
         Theater theater3 = new Theater(3, "Hall C", 3, 4);
         repository.save(theater1);

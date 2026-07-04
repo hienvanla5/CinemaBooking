@@ -1,7 +1,6 @@
 package com.cinema.repository;
 
 import com.cinema.model.Showtime;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -9,13 +8,14 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.List;
 
-public class ShowtimeRepositoryTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private ShowtimeRepository repository;
+public class ShowtimeRepositoryTest {
 
     @TempDir
     Path tempDir;
     String showtimeFile;
+    private ShowtimeRepository repository;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +55,7 @@ public class ShowtimeRepositoryTest {
     void updateExisting() {
         Showtime updated = new Showtime(2, 4, 4, "2026-02-02 12:12");
         repository.save(updated);
-        Showtime found =  repository.findById(2);
+        Showtime found = repository.findById(2);
         assertEquals(4, found.getMovieId());
         assertEquals(4, found.getTheaterId());
         assertEquals("2026-02-02 12:12", found.getStartTime());

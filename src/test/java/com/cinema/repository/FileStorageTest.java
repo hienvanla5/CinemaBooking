@@ -1,7 +1,5 @@
 package com.cinema.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -10,6 +8,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileStorageTest {
 

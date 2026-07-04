@@ -1,5 +1,10 @@
 package com.cinema.model;
 
+/**
+ * Represents a seat in a theater.
+ * Each seat belongs to a specific theater and is identified
+ * by its row and column position.
+ */
 public class Seat {
 
     private int id;

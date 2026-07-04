@@ -1,14 +1,13 @@
 package com.cinema.simulation;
 
-import com.cinema.context.AppContext;
 import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Seat;
-import com.cinema.repository.*;
+import com.cinema.repository.BookingRepository;
+import com.cinema.repository.SeatRepository;
+import com.cinema.repository.ShowtimeRepository;
 import com.cinema.service.BookingManager;
 import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.cinema.service.BookingValidator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +18,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class BookingSimulationTest {
 
     @TempDir
     Path tempDir;
 
     private BookingService bookingService;
-    private BookingRepository  bookingRepository;
+    private BookingRepository bookingRepository;
     private SeatRepository seatRepository;
 
     @BeforeEach

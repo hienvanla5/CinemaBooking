@@ -6,11 +6,12 @@ import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
 import com.cinema.repository.BookingRepository;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class BookingManagerTest {

@@ -1,6 +1,5 @@
 package com.cinema.integration;
 
-import com.cinema.context.AppContext;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.factory.RegularBookingFactory;
@@ -11,9 +10,6 @@ import com.cinema.repository.*;
 import com.cinema.service.BookingManager;
 import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.cinema.service.BookingValidator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,17 +20,18 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class BookingIntegrationTest {
 
+    @TempDir
+    Path tempDir;
     private BookingService bookingService;
     private BookingRepository bookingRepository;
     private MovieRepository movieRepository;
     private ShowtimeRepository showtimeRepository;
     private SeatRepository seatRepository;
     private TheaterRepository theaterRepository;
-
-    @TempDir
-    Path tempDir;
     private String movieFile;
     private String bookingFile;
     private String showtimeFile;
@@ -152,7 +149,7 @@ public class BookingIntegrationTest {
     @Test
     void testSeatIdNegative_ThrowsException() {
         assertThrows(InvalidInputException.class, () -> {
-           bookingService.bookSeat(1, -1, "Henry");
+            bookingService.bookSeat(1, -1, "Henry");
         });
     }
 

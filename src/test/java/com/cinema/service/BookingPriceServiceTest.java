@@ -5,10 +5,10 @@ import com.cinema.model.Showtime;
 import com.cinema.strategy.GoldHourPricingStrategy;
 import com.cinema.strategy.NormalPricingStrategy;
 import com.cinema.strategy.PriceCalculator;
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.cinema.strategy.WeekendPricingStrategy;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookingPriceServiceTest {
 

@@ -1,7 +1,6 @@
 package com.cinema.repository;
 
 import com.cinema.model.Seat;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -10,12 +9,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class SeatRepositoryTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private SeatRepository repository;
+public class SeatRepositoryTest {
 
     @TempDir
     Path tempDir;
+    private SeatRepository repository;
     private String seatFile;
 
     @BeforeEach

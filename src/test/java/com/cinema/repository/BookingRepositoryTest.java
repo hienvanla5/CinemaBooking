@@ -16,10 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookingRepositoryTest {
 
-    private BookingRepository repository;
-
     @TempDir
     Path tempDir;
+    private BookingRepository repository;
     private String bookingsFile;
 
     @BeforeEach
