@@ -17,7 +17,6 @@ public class Main {
     public static final String ANSI_RESET = "\u001B[0m";
     private static final MovieRepository movieRepository = new MovieRepository();
     private static final TheaterRepository theaterRepository = new TheaterRepository();
-    private static final BookingRepository bookingRepository = new BookingRepository();
     private static final ShowtimeRepository showtimeRepository = new ShowtimeRepository();
     private static final SeatRepository seatRepository = new SeatRepository();
     private static final BookingService bookingService = AppContext.getInstance().getBookingService();

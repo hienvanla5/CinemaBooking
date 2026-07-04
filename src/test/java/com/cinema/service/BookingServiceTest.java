@@ -72,7 +72,8 @@ public class BookingServiceTest {
         manager = new BookingManager(
                 bookingRepository,
                 new RegularBookingFactory(),
-                priceService
+                priceService,
+                false
         );
 
         bookingService = new BookingService(
@@ -137,7 +138,8 @@ public class BookingServiceTest {
         BookingManager vipManager = new BookingManager(
                 bookingRepository,
                 new VIPBookingFactory(2, 20),
-                priceService
+                priceService,
+                false
         );
 
         BookingService vipService = new BookingService(

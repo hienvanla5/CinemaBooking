@@ -3,6 +3,7 @@ package com.cinema.repository;
 import com.cinema.model.Seat;
 import com.cinema.model.Theater;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class TheaterRepository extends BaseRepository<Theater> {
 
     private final String filePath;
     private final SeatRepository seatRepository;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a theater repository using the default theater data file.
@@ -61,14 +63,14 @@ public class TheaterRepository extends BaseRepository<Theater> {
 
                     data.add(new Theater(id, name, totalRows, totalColumns));
                 } else {
-                    System.err.println("⚠️ Invalid theater record format.");
+                    logger.warning("⚠️ Invalid theater record format.");
                 }
             }
 
-            System.out.println("✅ Loaded " + data.size() + " theater(s) from the file.");
+            logger.info("✅ Loaded " + data.size() + " theater(s) from the file.");
 
         } catch (IOException e) {
-            System.out.println("📂 Data file not found. Initializing an empty repository.");
+            logger.warning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         }
     }
@@ -91,10 +93,10 @@ public class TheaterRepository extends BaseRepository<Theater> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            System.out.println("📂 Saved " + data.size() + " theater(s) to the file.");
+            logger.info("📂 Saved " + data.size() + " theater(s) to the file.");
 
         } catch (IOException e) {
-            System.err.println("❌ Failed to write theater data to the file: " + e.getMessage());
+            logger.severe("❌ Failed to write theater data to the file: " + e.getMessage());
         }
     }
 

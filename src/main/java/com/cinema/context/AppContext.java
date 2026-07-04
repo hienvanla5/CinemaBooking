@@ -55,7 +55,8 @@ public class AppContext {
         bookingManager = new BookingManager(
                 bookingRepository,
                 bookingFactory,
-                bookingPriceService
+                bookingPriceService,
+                true
         );
 
         bookingService = new BookingService(

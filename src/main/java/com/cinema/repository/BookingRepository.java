@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Booking;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class BookingRepository extends BaseRepository<Booking> {
 
     private String filePath;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a repository using the default bookings data file.
@@ -62,16 +64,16 @@ public class BookingRepository extends BaseRepository<Booking> {
 
                     data.add(new Booking(showtimeId, seatId, customerName, bookingTime));
                 } else {
-                    System.err.println("Warning: Invalid booking record skipped: " + line);
+                    logger.warning("Warning: Invalid booking record skipped: " + line);
                 }
             }
 
-            System.out.println("Loaded " + data.size() + " bookings from file.");
+            logger.info("Loaded " + data.size() + " bookings from file.");
         } catch (IOException e) {
-            System.out.println("Booking data file not found. Initialized with an empty repository.");
+            logger.warning("Booking data file not found. Initialized with an empty repository.");
             data = new ArrayList<>();
         } catch (NumberFormatException e) {
-            System.err.println("Failed to parse booking data: " + e.getMessage());
+            logger.severe("Failed to parse booking data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -92,9 +94,9 @@ public class BookingRepository extends BaseRepository<Booking> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            System.out.println("Saved " + data.size() + " bookings to file.");
+            logger.info("Saved " + data.size() + " bookings to file.");
         } catch (IOException e) {
-            System.err.println("Failed to save bookings to file: " + e.getMessage());
+            logger.severe("Failed to save bookings to file: " + e.getMessage());
             e.printStackTrace();
         }
     }

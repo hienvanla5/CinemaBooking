@@ -5,6 +5,7 @@ import com.cinema.exception.SeatUnavailableException;
 import com.cinema.model.Booking;
 import com.cinema.service.BookingService;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +24,7 @@ public class BookingSimulation {
 
     private final BookingService bookingService;
     private final ExecutorService executor;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a booking simulation.
@@ -58,19 +60,19 @@ public class BookingSimulation {
                     Booking booking = bookingService.bookSeat(showtimeId, seatId, "User-" + userId);
 
                     successCount.incrementAndGet();
-                    System.out.println("✅ User-" + userId + " successfully booked seat " + seatId);
+                    logger.info("✅ User-" + userId + " successfully booked seat " + seatId);
 
                 } catch (SeatUnavailableException e) {
                     failureCount.incrementAndGet();
-                    System.out.println("❌ User-" + userId + " failed to book the seat: " + e.getMessage());
+                    logger.warning("❌ User-" + userId + " failed to book the seat: " + e.getMessage());
 
                 } catch (InvalidInputException e) {
                     failureCount.incrementAndGet();
-                    System.out.println("⚠️ User-" + userId + " provided invalid input: " + e.getMessage());
+                    logger.warning("⚠️ User-" + userId + " provided invalid input: " + e.getMessage());
 
                 } catch (Exception e) {
                     failureCount.incrementAndGet();
-                    System.out.println("💥 User-" + userId + " encountered an unexpected error: " + e.getMessage());
+                    logger.severe("💥 User-" + userId + " encountered an unexpected error: " + e.getMessage());
                 }
             });
         }

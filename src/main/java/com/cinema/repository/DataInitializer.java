@@ -1,5 +1,7 @@
 package com.cinema.repository;
 
+import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class DataInitializer {
 
-    private static final String MOVIES_FILE = "src/main/resources/data/movies.csv";
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a sample movie data file containing predefined movie records.
@@ -28,9 +30,9 @@ public class DataInitializer {
                 "3|Inception|148"
         );
 
-        FileStorage.getInstance().writeLines(MOVIES_FILE, movieLines);
+        FileStorage.getInstance().writeLines(AppConstants.MOVIES_FILE, movieLines);
 
-        System.out.println("✅ Created sample file at: " + MOVIES_FILE);
+        logger.info("✅ Created sample file at: " + AppConstants.MOVIES_FILE);
     }
 
     /**

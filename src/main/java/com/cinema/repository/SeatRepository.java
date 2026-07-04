@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Seat;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class SeatRepository extends BaseRepository<Seat> {
 
     private final String filePath;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a seat repository using the default seat data file.
@@ -56,18 +58,18 @@ public class SeatRepository extends BaseRepository<Seat> {
                     Seat seat = new Seat(id, theaterId, row, column);
                     data.add(seat);
                 } else {
-                    System.err.println("⚠️ Invalid seat record format.");
+                    logger.warning("⚠️ Invalid seat record format.");
                 }
             }
 
-            System.out.println("✅ Loaded " + data.size() + " seat(s) from the file.");
+            logger.info("✅ Loaded " + data.size() + " seat(s) from the file.");
 
         } catch (IOException e) {
-            System.out.println("📂 Data file not found. Initializing an empty repository.");
+            logger.warning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
 
         } catch (NumberFormatException e) {
-            System.err.println("⚠️ Failed to parse seat data: " + e.getMessage());
+            logger.severe("⚠️ Failed to parse seat data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -90,10 +92,10 @@ public class SeatRepository extends BaseRepository<Seat> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            System.out.println("📂 Saved " + data.size() + " seat(s) to the file.");
+            logger.info("📂 Saved " + data.size() + " seat(s) to the file.");
 
         } catch (IOException e) {
-            System.err.println("❌ Failed to write seat data to the file: " + e.getMessage());
+            logger.severe("❌ Failed to write seat data to the file: " + e.getMessage());
         }
     }
 

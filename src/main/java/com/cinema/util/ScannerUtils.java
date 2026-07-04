@@ -7,6 +7,8 @@ import java.util.Scanner;
  */
 public class ScannerUtils {
 
+    private static final AppLogger logger = AppLogger.getInstance();
+
     /**
      * Reads an integer value from the specified {@link Scanner}.
      * <p>
@@ -21,7 +23,7 @@ public class ScannerUtils {
             try {
                 return Integer.parseInt(scanner.next().trim());
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number.");
+                logger.warning("Please enter a valid number.");
             }
         }
     }

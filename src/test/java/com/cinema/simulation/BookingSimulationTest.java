@@ -64,7 +64,8 @@ public class BookingSimulationTest {
         BookingManager manager = new BookingManager(
                 bookingRepository,
                 new RegularBookingFactory(),
-                priceService
+                priceService,
+                false
         );
 
         bookingService = new BookingService(bookingRepository, showtimeRepo, seatRepository, validator, manager);

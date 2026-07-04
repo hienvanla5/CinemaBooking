@@ -75,11 +75,14 @@ public class BookingUI {
         try {
             Booking booking = bookingService.bookSeat(showtimeId, seatId, customerName);
 
+            System.out.println("✅ Booking successfully!");
+            System.out.println("Seat: " + booking.getSeatId());
+            System.out.println("Customer: " + booking.getCustomerName());
         } catch (InvalidInputException e) {
             showError("Invalid input: " + e.getMessage());
 
         } catch (SeatUnavailableException e) {
-            System.out.println(e.getMessage());
+            System.out.println("❌" + e.getMessage());
         }
     }
 

@@ -72,7 +72,8 @@ public class ConcurrentBookingTest {
         BookingManager manager = new BookingManager(
                 bookingRepository,
                 new RegularBookingFactory(),
-                priceService
+                priceService,
+                false
         );
 
         bookingService = new BookingService(bookingRepository, showtimeRepository, seatRepository, validator, manager);
@@ -319,7 +320,8 @@ public class ConcurrentBookingTest {
         BookingManager manager = new BookingManager(
                 bookingRepository,
                 new RegularBookingFactory(),
-                priceService
+                priceService,
+                false
         );
 
         bookingService = new BookingService(bookingRepository, showtimeRepository, seatRepository, validator, manager);

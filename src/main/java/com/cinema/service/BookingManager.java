@@ -6,6 +6,7 @@ import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
 import com.cinema.repository.BookingRepository;
+import com.cinema.util.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,8 @@ public class BookingManager {
     private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
     private final ReentrantLock lock = new ReentrantLock(true);
     private BookingPriceService bookingPriceService;
+    private static final AppLogger logger = AppLogger.getInstance();
+    private final boolean immediatePersist;
 
     /**
      * Creates a booking manager.
@@ -37,10 +40,11 @@ public class BookingManager {
      */
     public BookingManager(BookingRepository bookingRepository,
                           BookingFactory bookingFactory,
-                          BookingPriceService bookingPriceService) {
+                          BookingPriceService bookingPriceService, boolean immediatePersist) {
         this.bookingRepository = bookingRepository;
         this.bookingFactory = bookingFactory;
         this.bookingPriceService = bookingPriceService;
+        this.immediatePersist = immediatePersist;
     }
 
     /**
@@ -81,6 +85,10 @@ public class BookingManager {
 
             pendingBookings.add(booking);
 
+            if (immediatePersist) {
+                flushBookings();
+            }
+
             return booking;
 
         } finally {
@@ -103,7 +111,15 @@ public class BookingManager {
 
             pendingBookings.clear();
 
-            System.out.println("💾 Saved " + toSave.size() + " booking(s) to the file.");
+            logger.info("💾 Saved " + toSave.size() + " booking(s) to the file.");
         }
+    }
+
+    // use for Main - BookingUI
+    public Booking bookImmediately(Showtime showtime, Seat seat, String customerName) {
+
+        Booking booking = addPendingBooking(showtime, seat, customerName);
+        flushBookings();
+        return booking;
     }
 }

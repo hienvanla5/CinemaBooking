@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Movie;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.List;
 public class MovieRepository extends BaseRepository<Movie> {
 
     private String filePath;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a movie repository using the default movie data file.
@@ -52,15 +54,15 @@ public class MovieRepository extends BaseRepository<Movie> {
                     int duration = Integer.parseInt(parts[2].trim());
                     data.add(new Movie(id, title, duration));
                 } else {
-                    System.err.println("⚠️ Invalid movie record format.");
+                    logger.warning("⚠️ Invalid movie record format.");
                 }
             }
-            System.out.println("✅ Loaded " + data.size() + " movie(s) from the file.");
+            logger.info("✅ Loaded " + data.size() + " movie(s) from the file.");
         } catch (IOException e) {
-            System.out.println("📂 Data file not found. Initializing an empty repository.");
+            logger.warning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         } catch (NumberFormatException e) {
-            System.err.println("⚠️ Failed to parse movie data: " + e.getMessage());
+            logger.severe("⚠️ Failed to parse movie data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -126,9 +128,9 @@ public class MovieRepository extends BaseRepository<Movie> {
                 lines.add(line);
             }
             FileStorage.getInstance().writeLines(filePath, lines);
-            System.out.println("📂 Saved " + data.size() + " movie(s) to the file.");
+            logger.info("📂 Saved " + data.size() + " movie(s) to the file.");
         } catch (IOException e) {
-            System.err.println("❌ Failed to write movie data to the file: " + e.getMessage());
+            logger.severe("❌ Failed to write movie data to the file: " + e.getMessage());
         }
     }
 
@@ -142,7 +144,7 @@ public class MovieRepository extends BaseRepository<Movie> {
             data.add(new Movie(2, "Titanic", 195));
             data.add(new Movie(3, "Inception", 148));
             saveToFile();
-            System.out.println("✅ Sample movie data has been created.");
+            logger.info("✅ Sample movie data has been created.");
         }
     }
 

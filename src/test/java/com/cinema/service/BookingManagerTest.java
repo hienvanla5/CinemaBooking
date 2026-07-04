@@ -25,7 +25,7 @@ public class BookingManagerTest {
         when(priceService.calculatePrice(any(), any())).thenReturn(50000.0);
 
         BookingFactory factory = new RegularBookingFactory();
-        BookingManager manager = new BookingManager(repo, factory, priceService);
+        BookingManager manager = new BookingManager(repo, factory, priceService, false);
 
         Showtime showtime = new Showtime(1, 1, 1, LocalDateTime.now().toString());
         Seat seat = new Seat(5, 1, 0, 4);

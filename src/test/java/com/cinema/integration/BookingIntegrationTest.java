@@ -75,7 +75,8 @@ public class BookingIntegrationTest {
         BookingManager manager = new BookingManager(
                 bookingRepository,
                 new RegularBookingFactory(),
-                priceService
+                priceService,
+                true
         );
 
         bookingService = new BookingService(bookingRepository, showtimeRepository, seatRepository, validator, manager);

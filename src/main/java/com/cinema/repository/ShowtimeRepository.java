@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Showtime;
 import com.cinema.util.AppConstants;
+import com.cinema.util.AppLogger;
 import com.cinema.util.FileStorage;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class ShowtimeRepository extends BaseRepository<Showtime> {
 
     private final String filePath;
+    private static final AppLogger logger = AppLogger.getInstance();
 
     /**
      * Creates a showtime repository using the default showtime data file.
@@ -57,14 +59,14 @@ public class ShowtimeRepository extends BaseRepository<Showtime> {
                     Showtime showtime = new Showtime(id, movieId, theaterId, startTime);
                     data.add(showtime);
                 } else {
-                    System.err.println("⚠️ Invalid showtime record format.");
+                    logger.warning("⚠️ Invalid showtime record format.");
                 }
             }
 
-            System.out.println("✅ Loaded " + data.size() + " showtime(s) from the file.");
+            logger.info("✅ Loaded " + data.size() + " showtime(s) from the file.");
 
         } catch (IOException e) {
-            System.out.println("📂 Data file not found. Initializing an empty repository.");
+            logger.warning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         }
     }
@@ -87,10 +89,10 @@ public class ShowtimeRepository extends BaseRepository<Showtime> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            System.out.println("📂 Saved " + data.size() + " showtime(s) to the file.");
+            logger.info("📂 Saved " + data.size() + " showtime(s) to the file.");
 
         } catch (IOException e) {
-            System.err.println("❌ Failed to write showtime data to the file: " + e.getMessage());
+            logger.severe("❌ Failed to write showtime data to the file: " + e.getMessage());
         }
     }
 
