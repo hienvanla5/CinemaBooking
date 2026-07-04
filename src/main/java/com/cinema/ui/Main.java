@@ -1,5 +1,6 @@
 package com.cinema.ui;
 
+import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Movie;
 import com.cinema.model.Showtime;
 import com.cinema.repository.*;
@@ -16,7 +17,7 @@ public class Main {
     private static final BookingRepository bookingRepository = new BookingRepository();
     private static final ShowtimeRepository showtimeRepository = new ShowtimeRepository();
     private static final SeatRepository seatRepository = new SeatRepository();
-    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
+    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
     private static final Scanner scanner = new Scanner(System.in);
 
     public static final String ANSI_GREEN = "\u001B[32m";

@@ -2,6 +2,7 @@ package com.cinema.concurrency;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
+import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Seat;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
@@ -60,7 +61,7 @@ public class ConcurrentBookingTest {
         showtimeRepository = new ShowtimeRepository(showtimeFile);
         bookingRepository = new BookingRepository(bookingFile);
 
-        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepository, seatRepository);
+        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepository, seatRepository, new RegularBookingFactory());
     }
 
     @Test
@@ -295,7 +296,7 @@ public class ConcurrentBookingTest {
         showtimeRepository = new ShowtimeRepository(realShowtimeFile);
         bookingRepository = new BookingRepository(realBookingFile);
 
-        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepository, seatRepository);
+        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepository, seatRepository, new RegularBookingFactory());
 
         //
         BookingSimulation simulation = new BookingSimulation(bookingService);

@@ -2,6 +2,8 @@ package com.cinema.service;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
+import com.cinema.factory.BookingFactory;
+import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
@@ -24,19 +26,22 @@ public class BookingService {
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
 
+    private final BookingFactory bookingFactory;
+
     private final ReentrantLock lock = new ReentrantLock(true);
 
     private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
 
     public BookingService() {
-        this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository());
+        this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository(), new RegularBookingFactory());
     }
 
-    public BookingService(BookingRepository bookingRepository, MovieRepository movieRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository) {
+    public BookingService(BookingRepository bookingRepository, MovieRepository movieRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository, BookingFactory bookingFactory) {
         this.bookingRepository = bookingRepository;
         this.movieRepository = movieRepository;
         this.showtimeRepository = showtimeRepository;
         this.seatRepository = seatRepository;
+        this.bookingFactory = bookingFactory;
     }
 
     public Booking bookSeat(int showtimeId, int seatId, String customerName)
@@ -67,7 +72,7 @@ public class BookingService {
                 throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
             }
 
-            Booking booking = new Booking(showtimeId, seatId, customerName);
+            Booking booking = bookingFactory.createBooking(showtimeId, seatId, customerName);
             pendingBookings.add(booking);
 
             return booking;

@@ -2,6 +2,9 @@ package com.cinema.service;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
+import com.cinema.factory.BookingFactory;
+import com.cinema.factory.RegularBookingFactory;
+import com.cinema.factory.VIPBookingFactory;
 import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Theater;
@@ -56,7 +59,7 @@ public class BookingServiceTest {
         bookingRepository = new BookingRepository(bookingFile);
         showtimeRepository = new ShowtimeRepository(showtimeFile);
         seatRepository = new SeatRepository(seatFile);
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
+        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
     }
 
     @Test
@@ -123,5 +126,14 @@ public class BookingServiceTest {
         assertFalse(available.stream().anyMatch(s -> s.getId() == 2));
         assertTrue(available.stream().anyMatch(s -> s.getId() == 3));
         assertTrue(available.stream().anyMatch(s -> s.getId() == 4));
+    }
+
+    @Test
+    void testVIPBooking() throws Exception {
+        BookingFactory vipFactory = new VIPBookingFactory(2, 20.0);
+        BookingService vipService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, vipFactory);
+        Booking booking = vipService.bookSeat(1, 5, "VIP User");
+        assertEquals(2, booking.getVipLevel());
+        assertEquals(20.0, booking.getDiscount());
     }
 }

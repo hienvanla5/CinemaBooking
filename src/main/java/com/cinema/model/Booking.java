@@ -9,6 +9,8 @@ public class Booking {
     private int seatId;
     private String customerName;
     private String bookingTime;
+    private int vipLevel;
+    private double discount;
 
     public Booking(int showtimeId, int seatId, String customerName) {
         this.showtimeId = showtimeId;
@@ -22,6 +24,15 @@ public class Booking {
         this.seatId = seatId;
         this.customerName = customerName;
         this.bookingTime = bookingTime;
+    }
+
+    public Booking(int showtimeId, int seatId, String customerName, int vipLevel, double discount) {
+        this.showtimeId = showtimeId;
+        this.seatId = seatId;
+        this.customerName = customerName;
+        this.bookingTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.vipLevel = vipLevel;
+        this.discount = discount;
     }
 
     public int getShowtimeId() {
@@ -38,6 +49,14 @@ public class Booking {
 
     public String getBookingTime() {
         return bookingTime;
+    }
+
+    public int getVipLevel() {
+        return vipLevel;
+    }
+
+    public double getDiscount() {
+        return discount;
     }
 
     @Override

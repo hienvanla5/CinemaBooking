@@ -1,5 +1,6 @@
 package com.cinema.simulation;
 
+import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Seat;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
@@ -52,7 +53,7 @@ public class BookingSimulationTest {
         ShowtimeRepository showtimeRepo = new ShowtimeRepository(showtimeFile);
         bookingRepository = new BookingRepository(bookingFile);
 
-        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepo, seatRepository);
+        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepo, seatRepository, new RegularBookingFactory());
     }
 
     @Test

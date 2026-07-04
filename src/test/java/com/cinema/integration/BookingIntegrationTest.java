@@ -2,6 +2,7 @@ package com.cinema.integration;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
+import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
@@ -67,7 +68,7 @@ public class BookingIntegrationTest {
         showtimeRepository = new ShowtimeRepository(showtimeFile);
 
 
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository);
+        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
     }
 
     @Test
