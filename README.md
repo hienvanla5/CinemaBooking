@@ -92,3 +92,15 @@ string bookingTime
     SHOWTIME ||--o{ BOOKING : "có"
     SEAT ||--o{ BOOKING : "được đặt"
 \`\`\`
+
+## 📊 Performance Test
+
+- Test với 20 users cùng đặt 1 ghế:
+  - Thành công: 1
+  - Thất bại: 19
+  - Time: 39ms
+
+- Test với 100 users, 50 ghế:
+  - Thành công: 50
+  - Thất bại: 50
+  - Thời gian: 8ms
