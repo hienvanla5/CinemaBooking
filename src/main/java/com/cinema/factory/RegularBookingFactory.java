@@ -5,7 +5,7 @@ import com.cinema.model.Booking;
 public class RegularBookingFactory implements BookingFactory {
 
     @Override
-    public Booking createBooking(int showtimeId, int seatId, String customerName) {
-        return new Booking(showtimeId, seatId, customerName);
+    public Booking createBooking(int showtimeId, int seatId, String customerName, double price) {
+        return new Booking(showtimeId, seatId, customerName, 0, 0, price);
     }
 }

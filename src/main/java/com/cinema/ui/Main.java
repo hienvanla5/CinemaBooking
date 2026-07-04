@@ -6,6 +6,8 @@ import com.cinema.model.Showtime;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 import com.cinema.simulation.BookingSimulation;
+import com.cinema.strategy.NormalPricingStrategy;
+import com.cinema.strategy.PriceCalculator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -17,7 +19,7 @@ public class Main {
     private static final BookingRepository bookingRepository = new BookingRepository();
     private static final ShowtimeRepository showtimeRepository = new ShowtimeRepository();
     private static final SeatRepository seatRepository = new SeatRepository();
-    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
+    private static final BookingService bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
     private static final Scanner scanner = new Scanner(System.in);
 
     public static final String ANSI_GREEN = "\u001B[32m";

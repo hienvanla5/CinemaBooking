@@ -13,7 +13,7 @@ public class VIPBookingFactory implements BookingFactory {
     }
 
     @Override
-    public Booking createBooking(int showtimeId, int seatId, String customerName) {
-        return new Booking(showtimeId, seatId, customerName, vipLevel, discount);
+    public Booking createBooking(int showtimeId, int seatId, String customerName, double price) {
+        return new Booking(showtimeId, seatId, customerName, vipLevel, discount, price);
     }
 }

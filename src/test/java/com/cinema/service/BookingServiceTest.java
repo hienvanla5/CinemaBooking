@@ -9,6 +9,8 @@ import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Theater;
 import com.cinema.repository.*;
+import com.cinema.strategy.NormalPricingStrategy;
+import com.cinema.strategy.PriceCalculator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +61,7 @@ public class BookingServiceTest {
         bookingRepository = new BookingRepository(bookingFile);
         showtimeRepository = new ShowtimeRepository(showtimeFile);
         seatRepository = new SeatRepository(seatFile);
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
+        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
     }
 
     @Test
@@ -131,7 +133,7 @@ public class BookingServiceTest {
     @Test
     void testVIPBooking() throws Exception {
         BookingFactory vipFactory = new VIPBookingFactory(2, 20.0);
-        BookingService vipService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, vipFactory);
+        BookingService vipService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, vipFactory, new PriceCalculator(new NormalPricingStrategy()));
         Booking booking = vipService.bookSeat(1, 5, "VIP User");
         assertEquals(2, booking.getVipLevel());
         assertEquals(20.0, booking.getDiscount());

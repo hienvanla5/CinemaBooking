@@ -11,6 +11,8 @@ import com.cinema.service.BookingService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.cinema.strategy.NormalPricingStrategy;
+import com.cinema.strategy.PriceCalculator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +70,7 @@ public class BookingIntegrationTest {
         showtimeRepository = new ShowtimeRepository(showtimeFile);
 
 
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory());
+        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
     }
 
     @Test

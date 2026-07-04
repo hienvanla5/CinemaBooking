@@ -11,6 +11,8 @@ import com.cinema.repository.BookingRepository;
 import com.cinema.repository.MovieRepository;
 import com.cinema.repository.SeatRepository;
 import com.cinema.repository.ShowtimeRepository;
+import com.cinema.strategy.NormalPricingStrategy;
+import com.cinema.strategy.PriceCalculator;
 import com.cinema.util.Validator;
 
 import java.util.ArrayList;
@@ -27,21 +29,23 @@ public class BookingService {
     private final SeatRepository seatRepository;
 
     private final BookingFactory bookingFactory;
+    private final PriceCalculator priceCalculator;
 
     private final ReentrantLock lock = new ReentrantLock(true);
 
     private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
 
     public BookingService() {
-        this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository(), new RegularBookingFactory());
+        this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository(), new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
     }
 
-    public BookingService(BookingRepository bookingRepository, MovieRepository movieRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository, BookingFactory bookingFactory) {
+    public BookingService(BookingRepository bookingRepository, MovieRepository movieRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository, BookingFactory bookingFactory, PriceCalculator priceCalculator) {
         this.bookingRepository = bookingRepository;
         this.movieRepository = movieRepository;
         this.showtimeRepository = showtimeRepository;
         this.seatRepository = seatRepository;
         this.bookingFactory = bookingFactory;
+        this.priceCalculator = priceCalculator;
     }
 
     public Booking bookSeat(int showtimeId, int seatId, String customerName)
@@ -54,25 +58,28 @@ public class BookingService {
 
         int theaterId = showtime.getTheaterId();
 
+        Seat seat = seatRepository.findById(seatId);
+
         Validator.validateSeatInTheater(seatId, theaterId, seatRepository);
 
-        return addPendingBookingIfAvailable(showtimeId, seatId, customerName);
+        return addPendingBookingIfAvailable(showtime, seat, customerName);
     }
 
-    private Booking addPendingBookingIfAvailable(int showtimeId, int seatId, String customerName) {
+    private Booking addPendingBookingIfAvailable(Showtime showtime, Seat seat, String customerName) {
         lock.lock();
         try {
             boolean booked =
-                    bookingRepository.isSeatBooked(showtimeId, seatId)
+                    bookingRepository.isSeatBooked(showtime.getId(), seat.getId())
                             || pendingBookings.stream()
-                            .anyMatch(b -> b.getShowtimeId() == showtimeId
-                                    && b.getSeatId() == seatId);
+                            .anyMatch(b -> b.getShowtimeId() == showtime.getId()
+                                    && b.getSeatId() == seat.getId());
 
             if (booked) {
-                throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
+                throw new SeatUnavailableException("Seat " + seat.getId() + " is already booked.");
             }
 
-            Booking booking = bookingFactory.createBooking(showtimeId, seatId, customerName);
+            double price = priceCalculator.calculatePrice(showtime, seat);
+            Booking booking = bookingFactory.createBooking(showtime.getId(), seat.getId(), customerName, price);
             pendingBookings.add(booking);
 
             return booking;
