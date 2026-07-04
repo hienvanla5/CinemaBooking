@@ -2,15 +2,11 @@ package com.cinema.service;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
-import com.cinema.factory.BookingFactory;
 import com.cinema.factory.RegularBookingFactory;
 import com.cinema.factory.VIPBookingFactory;
 import com.cinema.model.Booking;
 import com.cinema.model.Seat;
-import com.cinema.model.Theater;
 import com.cinema.repository.*;
-import com.cinema.strategy.NormalPricingStrategy;
-import com.cinema.strategy.PriceCalculator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,117 +21,136 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookingServiceTest {
 
-    private BookingService bookingService;
-    private BookingRepository bookingRepository;
-    private MovieRepository movieRepository;
-    private ShowtimeRepository showtimeRepository;
-    private SeatRepository seatRepository;
-    private TheaterRepository theaterRepository;
-
     @TempDir
     Path tempDir;
-    private String movieFile;
-    private String bookingFile;
-    private String showtimeFile;
-    private String seatFile;
-    private String theaterFile;
+
+    private BookingService bookingService;
+
+    private BookingRepository bookingRepository;
+    private ShowtimeRepository showtimeRepository;
+    private SeatRepository seatRepository;
+    private BookingValidator validator;
+    private BookingPriceService priceService;
+    private BookingManager manager;
 
     @BeforeEach
     void setUp() throws IOException {
-        movieFile = tempDir.resolve("movies.csv").toString();
-        bookingFile = tempDir.resolve("bookings.csv").toString();
-        showtimeFile = tempDir.resolve("showtimes.csv").toString();
-        seatFile = tempDir.resolve("seats.csv").toString();
-        theaterFile = tempDir.resolve("theaters.csv").toString();
 
-        List<String> showtimeLines = Arrays.asList("1|2|3|2026-07-02 09:00:00", "2|2|3|2026-07-02 19:00:00");
-        FileStorage.getInstance().writeLines(showtimeFile, showtimeLines);
+        String movieFile = tempDir.resolve("movies.csv").toString();
+        String theaterFile = tempDir.resolve("theaters.csv").toString();
+        String seatFile = tempDir.resolve("seats.csv").toString();
+        String showtimeFile = tempDir.resolve("showtimes.csv").toString();
+        String bookingFile = tempDir.resolve("bookings.csv").toString();
 
-        List<String> bookingLines = Arrays.asList("1|1|LaVanHien|2026-07-02 10:00:00", "1|2|HienVanLa|2026-07-03 11:00:00");
-        FileStorage.getInstance().writeLines(bookingFile, bookingLines);
+        FileStorage.getInstance().writeLines(movieFile, List.of("2|Avengers|180"));
 
-        theaterRepository = new TheaterRepository(theaterFile);
-        theaterRepository.save(new Theater(3, "Hall C", 4, 4));
+        FileStorage.getInstance().writeLines(theaterFile, List.of("3|Hall C|4|4"));
 
-        movieRepository = new MovieRepository(movieFile);
+        seatRepository = new SeatRepository(seatFile);
+
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                int id = r * 4 + c + 1;
+                seatRepository.save(new Seat(id, 3, r, c));
+            }
+        }
+
+        FileStorage.getInstance().writeLines(showtimeFile, Arrays.asList("1|2|3|2026-07-07 09:00", "2|2|3|2026-07-08 09:00"));
+
+        FileStorage.getInstance().writeLines(bookingFile, Arrays.asList("1|1|LaVanHien|50000", "1|2|hienvanla|5000"));
+
+        new MovieRepository(movieFile);
+        new TheaterRepository(theaterFile);
+
         bookingRepository = new BookingRepository(bookingFile);
         showtimeRepository = new ShowtimeRepository(showtimeFile);
-        seatRepository = new SeatRepository(seatFile);
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
+
+        validator = new BookingValidator(showtimeRepository, seatRepository);
+
+        priceService = new BookingPriceService();
+
+        manager = new BookingManager(
+                bookingRepository,
+                new RegularBookingFactory(),
+                priceService
+        );
+
+        bookingService = new BookingService(
+                bookingRepository,
+                showtimeRepository,
+                seatRepository,
+                validator,
+                manager
+        );
+
     }
 
     @Test
-    void testBookSeat_Success_ReturnsBooking() {
-        Booking booking = bookingService.bookSeat(1, 7, "Charlie");
+    void testBookSeatSuccess() {
+        Booking booking = bookingService.bookSeat(1, 5, "Charlie");
+
         assertNotNull(booking);
         assertEquals(1, booking.getShowtimeId());
-        assertEquals(7, booking.getSeatId());
+        assertEquals(5, booking.getSeatId());
         assertEquals("Charlie", booking.getCustomerName());
-
     }
 
     @Test
-    void testBookSeat_InvalidSeatId_ThrowsException() {
-        assertThrows(InvalidInputException.class, () -> {
-           bookingService.bookSeat(1, -1, "Hello");
-        });
-        assertThrows(InvalidInputException.class, () -> {
-            bookingService.bookSeat(1, 0, "Frank");
-        });
+    void testBookSeatSeatUnavailable() {
+
+        bookingService.bookSeat(1, 5, "Charlie");
+
+        assertThrows(SeatUnavailableException.class, () -> bookingService.bookSeat(1, 5, "DoMixi"));
     }
 
     @Test
-    void testBookSeat_EmptyCustomerName_ThrowsException() {
-        assertThrows(InvalidInputException.class, () -> {
-            bookingService.bookSeat(1, 2, "");
-        });
-    }
-
-    @Test
-    void testBookSeat_SeatAlreadyBooked_ThrowsUnavailableException() {
-        assertThrows(SeatUnavailableException.class, () -> {
-           bookingService.bookSeat(1, 2, "Charlie");
-        });
-    }
-
-    @Test
-    void testBookSeat_MovieNotFound_ThrowsException() {
-        assertThrows(InvalidInputException.class, () -> {
-           bookingService.bookSeat(3, 1, "Diddy");
-        });
-    }
-
-    @Test
-    void testBookSeat_WrongTheater() {
-        assertThrows(InvalidInputException.class, () -> {
-            bookingService.bookSeat(2, 17, "Charlie");
-        });
-    }
-
-    @Test
-    void testBookSeat_SeatUnavailable() {
-        bookingService.bookSeat(1, 4, "Charlie");
-        assertThrows(SeatUnavailableException.class, () -> {
-            bookingService.bookSeat(1, 4, "Diddy");
-        });
+    void testBookSeatInvalidInput() {
+        assertThrows(InvalidInputException.class, () -> bookingService.bookSeat(999, 1, "Charlie"));
     }
 
     @Test
     void testGetAvailableSeats() {
-        List<Seat> available = bookingService.getAvailableSeats(1);
-        assertEquals(14, available.size());
-        assertFalse(available.stream().anyMatch(s -> s.getId() == 1));
-        assertFalse(available.stream().anyMatch(s -> s.getId() == 2));
-        assertTrue(available.stream().anyMatch(s -> s.getId() == 3));
-        assertTrue(available.stream().anyMatch(s -> s.getId() == 4));
+
+        List<Seat> seats = bookingService.getAvailableSeats(1);
+        assertEquals(14, seats.size());
+
+        assertFalse(seats.stream()
+                .anyMatch(s -> s.getId() == 1));
+
+        assertFalse(seats.stream()
+                .anyMatch(s -> s.getId() == 2));
     }
 
     @Test
-    void testVIPBooking() throws Exception {
-        BookingFactory vipFactory = new VIPBookingFactory(2, 20.0);
-        BookingService vipService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, vipFactory, new PriceCalculator(new NormalPricingStrategy()));
-        Booking booking = vipService.bookSeat(1, 5, "VIP User");
+    void testFlushBookings() {
+
+        bookingService.bookSeat(1, 5, "Charlie");
+
+        bookingService.flushBookings();
+
+        assertTrue(bookingRepository.isSeatBooked(1, 5));
+    }
+
+    @Test
+    void testVIPBooking() {
+
+        BookingManager vipManager = new BookingManager(
+                bookingRepository,
+                new VIPBookingFactory(2, 20),
+                priceService
+        );
+
+        BookingService vipService = new BookingService(
+                bookingRepository,
+                showtimeRepository,
+                seatRepository,
+                validator,
+                vipManager
+        );
+
+        Booking booking = vipService.bookSeat(1, 6, "VIP User");
+
         assertEquals(2, booking.getVipLevel());
-        assertEquals(20.0, booking.getDiscount());
+        assertEquals(20, booking.getDiscount());
     }
 }

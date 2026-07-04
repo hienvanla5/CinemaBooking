@@ -1,5 +1,6 @@
 package com.cinema.integration;
 
+import com.cinema.context.AppContext;
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
 import com.cinema.factory.RegularBookingFactory;
@@ -7,12 +8,13 @@ import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
 import com.cinema.repository.*;
+import com.cinema.service.BookingManager;
+import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.cinema.strategy.NormalPricingStrategy;
-import com.cinema.strategy.PriceCalculator;
+import com.cinema.service.BookingValidator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,8 +71,17 @@ public class BookingIntegrationTest {
         bookingRepository = new BookingRepository(bookingFile);
         showtimeRepository = new ShowtimeRepository(showtimeFile);
 
+        BookingValidator validator = new BookingValidator(showtimeRepository, seatRepository);
 
-        bookingService = new BookingService(bookingRepository, movieRepository, showtimeRepository, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
+        BookingPriceService priceService = new BookingPriceService();
+
+        BookingManager manager = new BookingManager(
+                bookingRepository,
+                new RegularBookingFactory(),
+                priceService
+        );
+
+        bookingService = new BookingService(bookingRepository, showtimeRepository, seatRepository, validator, manager);
     }
 
     @Test

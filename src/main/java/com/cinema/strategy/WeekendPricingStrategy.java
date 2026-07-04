@@ -18,7 +18,7 @@ public class WeekendPricingStrategy implements PricingStrategy {
         DayOfWeek day = startTime.getDayOfWeek();
 
         if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
-            return BASE_PRICE * WEEKEND_SURCHARGE;
+            return Math.round(BASE_PRICE * WEEKEND_SURCHARGE);
         }
         return BASE_PRICE;
     }

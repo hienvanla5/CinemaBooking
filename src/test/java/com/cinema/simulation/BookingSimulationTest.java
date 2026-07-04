@@ -1,13 +1,15 @@
 package com.cinema.simulation;
 
+import com.cinema.context.AppContext;
 import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Seat;
 import com.cinema.repository.*;
+import com.cinema.service.BookingManager;
+import com.cinema.service.BookingPriceService;
 import com.cinema.service.BookingService;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.cinema.strategy.NormalPricingStrategy;
-import com.cinema.strategy.PriceCalculator;
+import com.cinema.service.BookingValidator;
 import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,12 +52,20 @@ public class BookingSimulationTest {
 
         FileStorage.getInstance().writeLines(bookingFile, List.of());
 
-        MovieRepository movieRepo = new MovieRepository(movieFile);
-        TheaterRepository theaterRepo = new TheaterRepository(theaterFile);
         ShowtimeRepository showtimeRepo = new ShowtimeRepository(showtimeFile);
         bookingRepository = new BookingRepository(bookingFile);
 
-        bookingService = new BookingService(bookingRepository, movieRepo, showtimeRepo, seatRepository, new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
+        BookingValidator validator = new BookingValidator(showtimeRepo, seatRepository);
+
+        BookingPriceService priceService = new BookingPriceService();
+
+        BookingManager manager = new BookingManager(
+                bookingRepository,
+                new RegularBookingFactory(),
+                priceService
+        );
+
+        bookingService = new BookingService(bookingRepository, showtimeRepo, seatRepository, validator, manager);
     }
 
     @Test

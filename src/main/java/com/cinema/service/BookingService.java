@@ -2,99 +2,46 @@ package com.cinema.service;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.exception.SeatUnavailableException;
-import com.cinema.factory.BookingFactory;
-import com.cinema.factory.RegularBookingFactory;
 import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Showtime;
 import com.cinema.repository.BookingRepository;
-import com.cinema.repository.MovieRepository;
 import com.cinema.repository.SeatRepository;
 import com.cinema.repository.ShowtimeRepository;
-import com.cinema.strategy.NormalPricingStrategy;
-import com.cinema.strategy.PriceCalculator;
-import com.cinema.util.Validator;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final MovieRepository movieRepository;
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
 
-    private final BookingFactory bookingFactory;
-    private final PriceCalculator priceCalculator;
+    private final BookingValidator bookingValidator;
+    private final BookingManager bookingManager;
 
-    private final ReentrantLock lock = new ReentrantLock(true);
-
-    private final List<Booking> pendingBookings = Collections.synchronizedList(new ArrayList<>());
-
-    public BookingService() {
-        this(new BookingRepository(), new MovieRepository(), new ShowtimeRepository(), new SeatRepository(), new RegularBookingFactory(), new PriceCalculator(new NormalPricingStrategy()));
-    }
-
-    public BookingService(BookingRepository bookingRepository, MovieRepository movieRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository, BookingFactory bookingFactory, PriceCalculator priceCalculator) {
+    public BookingService(BookingRepository bookingRepository, ShowtimeRepository showtimeRepository, SeatRepository seatRepository, BookingValidator bookingValidator, BookingManager bookingManager) {
         this.bookingRepository = bookingRepository;
-        this.movieRepository = movieRepository;
         this.showtimeRepository = showtimeRepository;
         this.seatRepository = seatRepository;
-        this.bookingFactory = bookingFactory;
-        this.priceCalculator = priceCalculator;
+
+        this.bookingValidator = bookingValidator;
+        this.bookingManager = bookingManager;
     }
 
     public Booking bookSeat(int showtimeId, int seatId, String customerName)
             throws InvalidInputException, SeatUnavailableException {
 
-        Validator.validateCustomerName(customerName);
-
-        Showtime showtime = showtimeRepository.findById(showtimeId);
-        Validator.validateShowtime(showtimeId, showtimeRepository);
-
-        int theaterId = showtime.getTheaterId();
+        Showtime showtime = bookingValidator.validateBooking(showtimeId, seatId, customerName);
 
         Seat seat = seatRepository.findById(seatId);
 
-        Validator.validateSeatInTheater(seatId, theaterId, seatRepository);
-
-        return addPendingBookingIfAvailable(showtime, seat, customerName);
+        return bookingManager.addPendingBooking(showtime, seat, customerName);
     }
 
-    private Booking addPendingBookingIfAvailable(Showtime showtime, Seat seat, String customerName) {
-        lock.lock();
-        try {
-            boolean booked =
-                    bookingRepository.isSeatBooked(showtime.getId(), seat.getId())
-                            || pendingBookings.stream()
-                            .anyMatch(b -> b.getShowtimeId() == showtime.getId()
-                                    && b.getSeatId() == seat.getId());
-
-            if (booked) {
-                throw new SeatUnavailableException("Seat " + seat.getId() + " is already booked.");
-            }
-
-            double price = priceCalculator.calculatePrice(showtime, seat);
-            Booking booking = bookingFactory.createBooking(showtime.getId(), seat.getId(), customerName, price);
-            pendingBookings.add(booking);
-
-            return booking;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public synchronized void flushBookings() {
-        if (!pendingBookings.isEmpty()) {
-            List<Booking> toSave = new ArrayList<>(pendingBookings);
-            bookingRepository.saveAll(toSave);
-            pendingBookings.clear();
-            System.out.println("💾 Flushed " + toSave.size() + " bookings to file.");
-        }
+    public void flushBookings() {
+        bookingManager.flushBookings();
     }
 
     public List<Seat> getAvailableSeats(int showtimeId) {
