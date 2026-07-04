@@ -1,6 +1,7 @@
 package com.cinema.repository;
 
 import com.cinema.model.Booking;
+import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -24,14 +25,13 @@ public class BookingRepositoryTest {
     @BeforeEach
     void setUp() throws IOException {
         bookingsFile = tempDir.resolve("bookings.csv").toString();
-        FileStorage fileStorage = new FileStorage();
 
         List<String> lines = Arrays.asList(
                 "1|5|Alice|2026-07-08 09:00:00",
                 "1|10|Bob|2026-07-08 09:05:00",
                 "2|3|Charlie|2026-07-08 09:10:00"
         );
-        fileStorage.writeLines(bookingsFile, lines);
+        FileStorage.getInstance().writeLines(bookingsFile, lines);
         repository = new BookingRepository(bookingsFile);
     }
 

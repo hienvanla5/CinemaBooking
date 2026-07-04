@@ -6,6 +6,7 @@ import com.cinema.model.Booking;
 import com.cinema.model.Seat;
 import com.cinema.model.Theater;
 import com.cinema.repository.*;
+import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -42,12 +43,11 @@ public class BookingServiceTest {
         seatFile = tempDir.resolve("seats.csv").toString();
         theaterFile = tempDir.resolve("theaters.csv").toString();
 
-        FileStorage fileStorage = new FileStorage();
         List<String> showtimeLines = Arrays.asList("1|2|3|2026-07-02 09:00:00", "2|2|3|2026-07-02 19:00:00");
-        fileStorage.writeLines(showtimeFile, showtimeLines);
+        FileStorage.getInstance().writeLines(showtimeFile, showtimeLines);
 
         List<String> bookingLines = Arrays.asList("1|1|LaVanHien|2026-07-02 10:00:00", "1|2|HienVanLa|2026-07-03 11:00:00");
-        fileStorage.writeLines(bookingFile, bookingLines);
+        FileStorage.getInstance().writeLines(bookingFile, bookingLines);
 
         theaterRepository = new TheaterRepository(theaterFile);
         theaterRepository.save(new Theater(3, "Hall C", 4, 4));

@@ -8,6 +8,7 @@ import com.cinema.service.BookingService;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.cinema.simulation.BookingSimulation;
+import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -38,11 +39,9 @@ public class ConcurrentBookingTest {
         String showtimeFile =  tempDir.resolve("showtimes.csv").toString();
         String bookingFile = tempDir.resolve("bookings.csv").toString();
 
-        FileStorage fs = new FileStorage();
+        FileStorage.getInstance().writeLines(movieFile, List.of("1|Avengers|180"));
 
-        fs.writeLines(movieFile, List.of("1|Avengers|180"));
-
-        fs.writeLines(theaterFile, List.of("1|Hall A|5|10"));
+        FileStorage.getInstance().writeLines(theaterFile, List.of("1|Hall A|5|10"));
 
         seatRepository = new SeatRepository(seatFile);
         for (int row = 0; row < 5; row++) {
@@ -52,9 +51,9 @@ public class ConcurrentBookingTest {
             }
         }
 
-        fs.writeLines(showtimeFile, List.of("1|1|1|2026-07-15 10:00"));
+        FileStorage.getInstance().writeLines(showtimeFile, List.of("1|1|1|2026-07-15 10:00"));
 
-        fs.writeLines(bookingFile, List.of());
+        FileStorage.getInstance().writeLines(bookingFile, List.of());
 
         MovieRepository movieRepo = new MovieRepository(movieFile);
         TheaterRepository theaterRepo = new TheaterRepository(theaterFile);
@@ -275,11 +274,9 @@ public class ConcurrentBookingTest {
         String realShowtimeFile =  "src/test/resources/data/showtimes.csv";
         String realBookingFile = "src/test/resources/data/bookings.csv";
 
-        FileStorage fs = new FileStorage();
+        FileStorage.getInstance().writeLines(realMovieFile, List.of("1|Avengers|180"));
 
-        fs.writeLines(realMovieFile, List.of("1|Avengers|180"));
-
-        fs.writeLines(realTheaterFile, List.of("1|Hall A|5|10"));
+        FileStorage.getInstance().writeLines(realTheaterFile, List.of("1|Hall A|5|10"));
 
         seatRepository = new SeatRepository(realSeatFile);
         for (int row = 0; row < 5; row++) {
@@ -289,9 +286,9 @@ public class ConcurrentBookingTest {
             }
         }
 
-        fs.writeLines(realShowtimeFile, List.of("1|1|1|2026-07-15 10:00"));
+        FileStorage.getInstance().writeLines(realShowtimeFile, List.of("1|1|1|2026-07-15 10:00"));
 
-        fs.writeLines(realBookingFile, List.of());
+        FileStorage.getInstance().writeLines(realBookingFile, List.of());
 
         MovieRepository movieRepo = new MovieRepository(realMovieFile);
         TheaterRepository theaterRepo = new TheaterRepository(realTheaterFile);
@@ -311,7 +308,7 @@ public class ConcurrentBookingTest {
         assertEquals(9, result.getFailure());
 
         assertTrue(new File(realBookingFile).exists());
-        List<String> lines = new FileStorage().readLines(realBookingFile);
+        List<String> lines = FileStorage.getInstance().readLines(realBookingFile);
         assertTrue(lines.stream().anyMatch(line -> line.contains("5")));
     }
 }

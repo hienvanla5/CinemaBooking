@@ -1,10 +1,19 @@
-package com.cinema.repository;
+package com.cinema.util;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileStorage {
+
+    private static final FileStorage INSTANCE = new FileStorage();
+
+    private FileStorage() {
+    }
+
+    public static FileStorage getInstance() {
+        return INSTANCE;
+    }
 
     public List<String> readLines(String filePath) throws IOException {
         List<String> lines = new ArrayList<>();

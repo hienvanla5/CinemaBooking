@@ -4,6 +4,8 @@ import com.cinema.model.Seat;
 import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -29,11 +31,9 @@ public class BookingSimulationTest {
         String showtimeFile = tempDir.resolve("showtimes.csv").toString();
         String bookingFile = tempDir.resolve("bookings.csv").toString();
 
-        FileStorage fs = new FileStorage();
+        FileStorage.getInstance().writeLines(movieFile, List.of("1|Avengers|180"));
 
-        fs.writeLines(movieFile, List.of("1|Avengers|180"));
-
-        fs.writeLines(theaterFile, List.of("1|Hall A|5|5"));
+        FileStorage.getInstance().writeLines(theaterFile, List.of("1|Hall A|5|5"));
 
         seatRepository = new SeatRepository(seatFile);
         for (int row = 0; row < 5; row++) {
@@ -43,9 +43,9 @@ public class BookingSimulationTest {
             }
         }
 
-        fs.writeLines(showtimeFile, List.of("1|1|1|2026-07-03 10:00"));
+        FileStorage.getInstance().writeLines(showtimeFile, List.of("1|1|1|2026-07-03 10:00"));
 
-        fs.writeLines(bookingFile, List.of());
+        FileStorage.getInstance().writeLines(bookingFile, List.of());
 
         MovieRepository movieRepo = new MovieRepository(movieFile);
         TheaterRepository theaterRepo = new TheaterRepository(theaterFile);

@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Seat;
 import com.cinema.util.AppConstants;
+import com.cinema.util.FileStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class SeatRepository extends BaseRepository<Seat> {
 
-    private final FileStorage fileStorage;
     private final String filePath;
 
     public SeatRepository() {
@@ -19,13 +19,12 @@ public class SeatRepository extends BaseRepository<Seat> {
 
     public SeatRepository(String seatFile) {
         this.filePath = seatFile;
-        fileStorage = new FileStorage();
         loadFromFile();
     }
 
     private void loadFromFile() {
         try {
-            List<String> lines = fileStorage.readLines(filePath);
+            List<String> lines = FileStorage.getInstance().readLines(filePath);
 
             for (String line : lines) {
                 if (line.trim().isEmpty()) continue;
@@ -60,7 +59,7 @@ public class SeatRepository extends BaseRepository<Seat> {
                         + seat.getColumn();
                 lines.add(line);
             }
-            fileStorage.writeLines(filePath, lines);
+            FileStorage.getInstance().writeLines(filePath, lines);
             System.out.println("📂 Saved " + data.size() + " seats.");
         } catch (IOException e) {
             System.err.println("❌ Error writing seats.csv: " + e.getMessage());

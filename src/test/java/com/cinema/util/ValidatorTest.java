@@ -2,7 +2,6 @@ package com.cinema.util;
 
 import com.cinema.exception.InvalidInputException;
 import com.cinema.model.Seat;
-import com.cinema.repository.FileStorage;
 import com.cinema.repository.SeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +25,9 @@ public class ValidatorTest {
     @BeforeEach
     void setUp() throws IOException {
         seatsFile = tempDir.resolve("seats.csv").toString();
-        FileStorage fileStorage = new FileStorage();
 
         List<String> lines = new ArrayList<>();
-        fileStorage.writeLines(seatsFile, lines);
+        FileStorage.getInstance().writeLines(seatsFile, lines);
 
         seatRepo = new SeatRepository(seatsFile);
     }

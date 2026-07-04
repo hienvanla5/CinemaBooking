@@ -2,6 +2,7 @@ package com.cinema.repository;
 
 import com.cinema.model.Booking;
 import com.cinema.util.AppConstants;
+import com.cinema.util.FileStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.stream.Collectors;
 public class BookingRepository extends BaseRepository<Booking> {
 
     private String filePath;
-    private final FileStorage fileStorage;
 
     public BookingRepository() {
         this(AppConstants.BOOKINGS_FILE);
@@ -19,13 +19,12 @@ public class BookingRepository extends BaseRepository<Booking> {
 
     public BookingRepository(String filePath) {
         this.filePath = filePath;
-        this.fileStorage = new FileStorage();
         loadFromFile();
     }
 
     public void loadFromFile() {
         try {
-            List<String> lines = fileStorage.readLines(filePath);
+            List<String> lines = FileStorage.getInstance().readLines(filePath);
             data = new ArrayList<>();
 
             for (String line : lines) {
@@ -64,7 +63,7 @@ public class BookingRepository extends BaseRepository<Booking> {
                       + booking.getBookingTime();
               lines.add(line);
           }
-          fileStorage.writeLines(filePath, lines);
+          FileStorage.getInstance().writeLines(filePath, lines);
           System.out.println("📂 Saved " + data.size() + " bookings in file.");
         } catch (IOException e) {
             System.err.println("❌ Error when write file bookings.csv: " + e.getMessage());

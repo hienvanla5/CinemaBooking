@@ -10,6 +10,7 @@ import com.cinema.service.BookingService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.cinema.util.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -44,10 +45,9 @@ public class BookingIntegrationTest {
         seatFile = tempDir.resolve("seats.csv").toString();
         theaterFile = tempDir.resolve("theaters.csv").toString();
 
-        FileStorage fileStorage = new FileStorage();
-        fileStorage.writeLines(movieFile, List.of("1|Avengers|180", "2|Titanic|195"));
+        FileStorage.getInstance().writeLines(movieFile, List.of("1|Avengers|180", "2|Titanic|195"));
 
-        fileStorage.writeLines(theaterFile, List.of("1|Hall A|5|5"));
+        FileStorage.getInstance().writeLines(theaterFile, List.of("1|Hall A|5|5"));
 
         seatRepository = new SeatRepository(seatFile);
         for (int row = 0; row < 5; row++) {
@@ -57,9 +57,9 @@ public class BookingIntegrationTest {
             }
         }
 
-        fileStorage.writeLines(showtimeFile, List.of("1|1|1|2026-07-11 14:00"));
+        FileStorage.getInstance().writeLines(showtimeFile, List.of("1|1|1|2026-07-11 14:00"));
 
-        fileStorage.writeLines(bookingFile, List.of());
+        FileStorage.getInstance().writeLines(bookingFile, List.of());
 
         movieRepository = new MovieRepository(movieFile);
         theaterRepository = new TheaterRepository(theaterFile);
@@ -73,6 +73,7 @@ public class BookingIntegrationTest {
     @Test
     void testFullBookingFlow_Success() {
         Booking booking = bookingService.bookSeat(1, 5, "Alice");
+        bookingService.flushBookings();
         assertNotNull(booking);
         assertEquals(1, booking.getShowtimeId());
         assertEquals(5, booking.getSeatId());
@@ -106,9 +107,11 @@ public class BookingIntegrationTest {
     @Test
     void testMultipleBookingsSequentially() {
         Booking b1 = bookingService.bookSeat(1, 7, "Eve");
+        bookingService.flushBookings();
         assertNotNull(b1);
 
         Booking b2 = bookingService.bookSeat(1, 8, "Frank");
+        bookingService.flushBookings();
         assertNotNull(b2);
 
         assertTrue(bookingRepository.isSeatBooked(1, 7));
@@ -119,6 +122,7 @@ public class BookingIntegrationTest {
     @Test
     void testCustomerNameWithSpaces() {
         Booking booking = bookingService.bookSeat(1, 3, "Nguyen Van A");
+        bookingService.flushBookings();
         assertNotNull(booking);
         assertEquals("Nguyen Van A", booking.getCustomerName());
         assertTrue(bookingRepository.isSeatBooked(1, 3));
@@ -188,6 +192,7 @@ public class BookingIntegrationTest {
     @Test
     void testGetAvailableSeats() {
         bookingService.bookSeat(1, 5, "Alice");
+        bookingService.flushBookings();
         List<Seat> available = bookingService.getAvailableSeats(1);
         assertEquals(24, available.size());
         assertFalse(available.stream().anyMatch(s -> s.getId() == 5));

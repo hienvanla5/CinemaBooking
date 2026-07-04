@@ -39,7 +39,8 @@ public class BookingService {
         this.seatRepository = seatRepository;
     }
 
-    public Booking bookSeat(int showtimeId, int seatId, String customerName) throws InvalidInputException, SeatUnavailableException {
+    public Booking bookSeat(int showtimeId, int seatId, String customerName)
+            throws InvalidInputException, SeatUnavailableException {
 
         Validator.validateCustomerName(customerName);
 
@@ -50,17 +51,24 @@ public class BookingService {
 
         Validator.validateSeatInTheater(seatId, theaterId, seatRepository);
 
+        return addPendingBookingIfAvailable(showtimeId, seatId, customerName);
+    }
+
+    private Booking addPendingBookingIfAvailable(int showtimeId, int seatId, String customerName) {
         lock.lock();
         try {
-            // synchronize START
-            boolean booked = bookingRepository.isSeatBooked(showtimeId, seatId) || pendingBookings.stream().anyMatch(b -> b.getShowtimeId() == showtimeId && b.getSeatId() == seatId);
+            boolean booked =
+                    bookingRepository.isSeatBooked(showtimeId, seatId)
+                            || pendingBookings.stream()
+                            .anyMatch(b -> b.getShowtimeId() == showtimeId
+                                    && b.getSeatId() == seatId);
+
             if (booked) {
                 throw new SeatUnavailableException("Seat " + seatId + " is already booked.");
             }
 
             Booking booking = new Booking(showtimeId, seatId, customerName);
             pendingBookings.add(booking);
-            // END
 
             return booking;
         } finally {
