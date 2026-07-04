@@ -104,3 +104,11 @@ string bookingTime
   - Thành công: 50
   - Thất bại: 50
   - Thời gian: 8ms
+
+## Xử lý đa luồng (Multi-threading)
+
+Hệ thống hỗ trợ đặt vé đồng thời với nhiều người dùng:
+- Sử dụng `synchronized` để bảo vệ critical section (kiểm tra + thêm booking).
+- Sử dụng `pendingBookings` (synchronizedList) để lưu tạm các booking.
+- Gọi `flushBookings()` để ghi toàn bộ vào file sau khi tất cả thread hoàn thành.
+- Không có deadlock hay race condition.
