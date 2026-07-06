@@ -113,7 +113,7 @@ string bookingTime
     - Thất bại: 50
     - Thời gian: 8ms
 
-## Xử lý đa luồng (Multi-threading)
+## Tuần 4: Xử lý đa luồng (Multi-threading)
 
 Hệ thống hỗ trợ đặt vé đồng thời với nhiều người dùng:
 
@@ -121,3 +121,46 @@ Hệ thống hỗ trợ đặt vé đồng thời với nhiều người dùng:
 - Sử dụng `pendingBookings` (synchronizedList) để lưu tạm các booking.
 - Gọi `flushBookings()` để ghi toàn bộ vào file sau khi tất cả thread hoàn thành.
 - Không có deadlock hay race condition.
+
+
+## 🏗️Tuần 5: Kiến trúc và Design Patterns
+
+### Kiến trúc tổng thể
+Ứng dụng được chia thành các tầng:
+- **Model:** Chứa các entity (Movie, Theater, Showtime, Seat, Booking).
+- **Repository:** Quản lý dữ liệu (CRUD) với file CSV, sử dụng Generic.
+- **Service:** Xử lý logic nghiệp vụ (đặt vé, tính giá, validation).
+- **UI:** Console menu tương tác với người dùng.
+- **Util:** Các tiện ích (FileStorage, Validator, Logger).
+- **Context:** Quản lý dependency (AppContext).
+
+### Design Patterns đã áp dụng
+
+#### 1. Singleton Pattern
+- **FileStorage**: Quản lý đọc/ghi file, chỉ cần một instance duy nhất.
+- **AppContext**: Quản lý toàn bộ dependencies (repository, service, factory).
+- **AppLogger**: Ghi log toàn cục.
+
+#### 2. Factory Pattern
+- **BookingFactory**: Tạo các loại Booking khác nhau (Regular, VIP, Combo).
+- Giúp dễ dàng mở rộng thêm loại booking mới.
+
+#### 3. Strategy Pattern
+- **PricingStrategy**: Tính giá vé theo giờ chiếu (Normal, GoldHour, Weekend).
+- Giúp thay đổi cách tính giá mà không ảnh hưởng logic core.
+
+#### 4. Generic Repository
+- **BaseRepository<T>**: Cung cấp CRUD chung cho tất cả entity.
+- Giảm code trùng lặp, dễ bảo trì.
+
+### Cách chạy ứng dụng
+1. **Build:** `mvn clean package` (hoặc `gradle build`)
+2. **Chạy:** `java -jar target/cinema-booking.jar`
+3. **Chạy test:** `mvn test`
+
+### Hướng dẫn sử dụng
+- Menu chính hiển thị các lựa chọn: Xem phim, Đặt vé, Quản lý phòng, Quản lý suất chiếu, Mô phỏng đặt vé đồng thời.
+- Dữ liệu được lưu trong thư mục `src/main/resources/data/`.
+
+## 📊 Class Diagram
+![Class Diagram](docs/class_diagram.png)
