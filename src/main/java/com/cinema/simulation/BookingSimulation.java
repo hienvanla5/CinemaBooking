@@ -60,19 +60,19 @@ public class BookingSimulation {
                     Booking booking = bookingService.bookSeat(showtimeId, seatId, "User-" + userId);
 
                     successCount.incrementAndGet();
-                    logger.info("✅ User-" + userId + " successfully booked seat " + seatId);
+                    logger.logInfo("✅ User-" + userId + " successfully booked seat " + seatId);
 
                 } catch (SeatUnavailableException e) {
                     failureCount.incrementAndGet();
-                    logger.warning("❌ User-" + userId + " failed to book the seat: " + e.getMessage());
+                    logger.logWarning("❌ User-" + userId + " failed to book the seat: " + e.getMessage());
 
                 } catch (InvalidInputException e) {
                     failureCount.incrementAndGet();
-                    logger.warning("⚠️ User-" + userId + " provided invalid input: " + e.getMessage());
+                    logger.logWarning("⚠️ User-" + userId + " provided invalid input: " + e.getMessage());
 
                 } catch (Exception e) {
                     failureCount.incrementAndGet();
-                    logger.severe("💥 User-" + userId + " encountered an unexpected error: " + e.getMessage());
+                    logger.logError("💥 User-" + userId + " encountered an unexpected error: " + e.getMessage());
                 }
             });
         }

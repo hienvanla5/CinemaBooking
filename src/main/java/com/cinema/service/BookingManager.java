@@ -111,7 +111,7 @@ public class BookingManager {
 
             pendingBookings.clear();
 
-            logger.info("💾 Saved " + toSave.size() + " booking(s) to the file.");
+            logger.logInfo("💾 Saved " + toSave.size() + " booking(s) to the file.");
         }
     }
 

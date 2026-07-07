@@ -59,14 +59,14 @@ public class ShowtimeRepository extends BaseRepository<Showtime> {
                     Showtime showtime = new Showtime(id, movieId, theaterId, startTime);
                     data.add(showtime);
                 } else {
-                    logger.warning("⚠️ Invalid showtime record format.");
+                    logger.logWarning("⚠️ Invalid showtime record format.");
                 }
             }
 
-            logger.info("✅ Loaded " + data.size() + " showtime(s) from the file.");
+            logger.logInfo("✅ Loaded " + data.size() + " showtime(s) from the file.");
 
         } catch (IOException e) {
-            logger.warning("📂 Data file not found. Initializing an empty repository.");
+            logger.logWarning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         }
     }
@@ -89,10 +89,10 @@ public class ShowtimeRepository extends BaseRepository<Showtime> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            logger.info("📂 Saved " + data.size() + " showtime(s) to the file.");
+            logger.logInfo("📂 Saved " + data.size() + " showtime(s) to the file.");
 
         } catch (IOException e) {
-            logger.severe("❌ Failed to write showtime data to the file: " + e.getMessage());
+            logger.logError("❌ Failed to write showtime data to the file: " + e.getMessage());
         }
     }
 

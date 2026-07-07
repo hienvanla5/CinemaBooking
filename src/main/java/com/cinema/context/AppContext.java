@@ -75,4 +75,24 @@ public class AppContext {
     public BookingService getBookingService() {
         return bookingService;
     }
+
+    public SeatRepository getSeatRepository() {
+        return seatRepository;
+    }
+
+    public ShowtimeRepository getShowtimeRepository() {
+        return showtimeRepository;
+    }
+
+    public TheaterRepository getTheaterRepository() {
+        return theaterRepository;
+    }
+
+    public BookingRepository getBookingRepository() {
+        return bookingRepository;
+    }
+
+    public MovieRepository getMovieRepository() {
+        return movieRepository;
+    }
 }

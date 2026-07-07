@@ -63,14 +63,14 @@ public class TheaterRepository extends BaseRepository<Theater> {
 
                     data.add(new Theater(id, name, totalRows, totalColumns));
                 } else {
-                    logger.warning("⚠️ Invalid theater record format.");
+                    logger.logWarning("⚠️ Invalid theater record format.");
                 }
             }
 
-            logger.info("✅ Loaded " + data.size() + " theater(s) from the file.");
+            logger.logInfo("✅ Loaded " + data.size() + " theater(s) from the file.");
 
         } catch (IOException e) {
-            logger.warning("📂 Data file not found. Initializing an empty repository.");
+            logger.logWarning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         }
     }
@@ -93,10 +93,10 @@ public class TheaterRepository extends BaseRepository<Theater> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            logger.info("📂 Saved " + data.size() + " theater(s) to the file.");
+            logger.logInfo("📂 Saved " + data.size() + " theater(s) to the file.");
 
         } catch (IOException e) {
-            logger.severe("❌ Failed to write theater data to the file: " + e.getMessage());
+            logger.logError("❌ Failed to write theater data to the file: " + e.getMessage());
         }
     }
 

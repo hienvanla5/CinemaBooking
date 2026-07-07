@@ -64,16 +64,16 @@ public class BookingRepository extends BaseRepository<Booking> {
 
                     data.add(new Booking(showtimeId, seatId, customerName, bookingTime));
                 } else {
-                    logger.warning("Warning: Invalid booking record skipped: " + line);
+                    logger.logWarning("Warning: Invalid booking record skipped: " + line);
                 }
             }
 
-            logger.info("Loaded " + data.size() + " bookings from file.");
+            logger.logInfo("Loaded " + data.size() + " bookings from file.");
         } catch (IOException e) {
-            logger.warning("Booking data file not found. Initialized with an empty repository.");
+            logger.logWarning("Booking data file not found. Initialized with an empty repository.");
             data = new ArrayList<>();
         } catch (NumberFormatException e) {
-            logger.severe("Failed to parse booking data: " + e.getMessage());
+            logger.logError("Failed to parse booking data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -94,9 +94,9 @@ public class BookingRepository extends BaseRepository<Booking> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            logger.info("Saved " + data.size() + " bookings to file.");
+            logger.logInfo("Saved " + data.size() + " bookings to file.");
         } catch (IOException e) {
-            logger.severe("Failed to save bookings to file: " + e.getMessage());
+            logger.logError("Failed to save bookings to file: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -192,5 +192,16 @@ public class BookingRepository extends BaseRepository<Booking> {
     public void saveAll(List<Booking> bookings) {
         data.addAll(bookings);
         saveToFile();
+    }
+
+    public List<Booking> findByCustomerName(String customerName) {
+        if (customerName == null || customerName.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String searchName = customerName.trim().toLowerCase();
+        return data.stream()
+                .filter(b -> b.getCustomerName().toLowerCase().contains(searchName))
+                .collect(Collectors.toList());
     }
 }

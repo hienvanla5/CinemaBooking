@@ -11,6 +11,7 @@ import com.cinema.repository.ShowtimeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -108,5 +109,21 @@ public class BookingService {
         return allSeats.stream()
                 .filter(seat -> !bookedSeatIds.contains(seat.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public double getTotalRevenue() {
+        return bookingRepository.findAll().stream()
+                .mapToDouble(Booking::getPrice)
+                .sum();
+    }
+
+    public Map<String, Double> getRevenueByMovie() {
+        // join với showtime và movie để lấy tên phim
+        // rồi chỉ cần tính theo showtime ID
+        return bookingRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        b -> String.valueOf(b.getShowtimeId()),
+                        Collectors.summingDouble(Booking::getPrice)
+                ));
     }
 }

@@ -58,18 +58,18 @@ public class SeatRepository extends BaseRepository<Seat> {
                     Seat seat = new Seat(id, theaterId, row, column);
                     data.add(seat);
                 } else {
-                    logger.warning("⚠️ Invalid seat record format.");
+                    logger.logWarning("⚠️ Invalid seat record format.");
                 }
             }
 
-            logger.info("✅ Loaded " + data.size() + " seat(s) from the file.");
+            logger.logInfo("✅ Loaded " + data.size() + " seat(s) from the file.");
 
         } catch (IOException e) {
-            logger.warning("📂 Data file not found. Initializing an empty repository.");
+            logger.logWarning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
 
         } catch (NumberFormatException e) {
-            logger.severe("⚠️ Failed to parse seat data: " + e.getMessage());
+            logger.logError("⚠️ Failed to parse seat data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -92,10 +92,10 @@ public class SeatRepository extends BaseRepository<Seat> {
             }
 
             FileStorage.getInstance().writeLines(filePath, lines);
-            logger.info("📂 Saved " + data.size() + " seat(s) to the file.");
+            logger.logInfo("📂 Saved " + data.size() + " seat(s) to the file.");
 
         } catch (IOException e) {
-            logger.severe("❌ Failed to write seat data to the file: " + e.getMessage());
+            logger.logError("❌ Failed to write seat data to the file: " + e.getMessage());
         }
     }
 

@@ -32,7 +32,7 @@ public class DataInitializer {
 
         FileStorage.getInstance().writeLines(AppConstants.MOVIES_FILE, movieLines);
 
-        logger.info("✅ Created sample file at: " + AppConstants.MOVIES_FILE);
+        logger.logInfo("✅ Created sample file at: " + AppConstants.MOVIES_FILE);
     }
 
     /**

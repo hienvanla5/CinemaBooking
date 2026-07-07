@@ -54,15 +54,15 @@ public class MovieRepository extends BaseRepository<Movie> {
                     int duration = Integer.parseInt(parts[2].trim());
                     data.add(new Movie(id, title, duration));
                 } else {
-                    logger.warning("⚠️ Invalid movie record format.");
+                    logger.logWarning("⚠️ Invalid movie record format.");
                 }
             }
-            logger.info("✅ Loaded " + data.size() + " movie(s) from the file.");
+            logger.logInfo("✅ Loaded " + data.size() + " movie(s) from the file.");
         } catch (IOException e) {
-            logger.warning("📂 Data file not found. Initializing an empty repository.");
+            logger.logWarning("📂 Data file not found. Initializing an empty repository.");
             data = new ArrayList<>();
         } catch (NumberFormatException e) {
-            logger.severe("⚠️ Failed to parse movie data: " + e.getMessage());
+            logger.logError("⚠️ Failed to parse movie data: " + e.getMessage());
             data = new ArrayList<>();
         }
     }
@@ -128,9 +128,9 @@ public class MovieRepository extends BaseRepository<Movie> {
                 lines.add(line);
             }
             FileStorage.getInstance().writeLines(filePath, lines);
-            logger.info("📂 Saved " + data.size() + " movie(s) to the file.");
+            logger.logInfo("📂 Saved " + data.size() + " movie(s) to the file.");
         } catch (IOException e) {
-            logger.severe("❌ Failed to write movie data to the file: " + e.getMessage());
+            logger.logError("❌ Failed to write movie data to the file: " + e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class MovieRepository extends BaseRepository<Movie> {
             data.add(new Movie(2, "Titanic", 195));
             data.add(new Movie(3, "Inception", 148));
             saveToFile();
-            logger.info("✅ Sample movie data has been created.");
+            logger.logInfo("✅ Sample movie data has been created.");
         }
     }
 

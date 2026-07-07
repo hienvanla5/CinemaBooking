@@ -23,7 +23,7 @@ public class ScannerUtils {
             try {
                 return Integer.parseInt(scanner.next().trim());
             } catch (NumberFormatException e) {
-                logger.warning("Please enter a valid number.");
+                logger.logWarning("Please enter a valid number.");
             }
         }
     }

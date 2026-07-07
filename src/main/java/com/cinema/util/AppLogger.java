@@ -26,30 +26,34 @@ public class AppLogger {
         consoleHandler.setFormatter(new SimpleFormatter());
         logger.addHandler(consoleHandler);
 
-        logger.setLevel(Level.INFO);
+        logger.setLevel(Level.ALL);
+
+        for (Handler handler : logger.getHandlers()) {
+            handler.setLevel(Level.ALL);
+        }
     }
 
     public static AppLogger getInstance() {
         return INSTANCE;
     }
 
-    public void info(String message) {
+    public void logInfo(String message) {
         logger.info(message);
     }
 
-    public void warning(String message) {
+    public void logWarning(String message) {
         logger.warning(message);
     }
 
-    public void severe(String message) {
+    public void logError(String message) {
         logger.severe(message);
     }
 
-    public void severe(String message, Throwable throwable) {
+    public void logError(String message, Throwable throwable) {
         logger.log(Level.SEVERE, message, throwable);
     }
 
-    public void debug(String message) {
+    public void logDebug(String message) {
         logger.fine(message);
     }
 }
