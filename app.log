@@ -28759,3 +28759,151 @@ Jul 07, 2026 9:19:01 AM com.cinema.util.AppLogger logInfo
 INFO: ✅ Loaded 0 seat(s) from the file.
 Jul 07, 2026 9:19:01 AM com.cinema.util.AppLogger logInfo
 INFO: 📂 Saved 1 seat(s) to the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:42:35 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:44:06 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:44:22 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:44:52 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:45:42 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:56:38 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 1 bookings from file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 movie(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 1 theater(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 9 seat(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: ✅ Loaded 2 showtime(s) from the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 0 bookings from file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Saved 1 bookings to file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: 💾 Saved 1 booking(s) to the file.
+Jul 07, 2026 9:56:44 AM com.cinema.util.AppLogger logInfo
+INFO: Loaded 1 bookings from file.
