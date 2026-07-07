@@ -37,7 +37,8 @@ public class Main {
             System.out.println("6. Customer booking history");
             System.out.println("7. Revenue statistics");
             System.out.println("8. Simulate concurrent ticket booking");
-            System.out.println("9. Exit");
+            System.out.println("9. Measure performance");
+            System.out.println("10. Exit");
             System.out.print("Enter your choice: ");
 
             String input = scanner.nextLine();
@@ -58,7 +59,8 @@ public class Main {
                 case 6 -> viewBookingHistory();
                 case 7 -> viewRevenue();
                 case 8 -> simulateBooking();
-                case 9 -> {
+                case 9 -> measurePerformance();
+                case 10 -> {
                     System.out.println("Thank you for using Cinema Booking Application.");
                     scanner.close();
                     System.exit(0);
@@ -129,8 +131,7 @@ public class Main {
 
     private static void displaySeatMap() {
         try {
-            System.out.print("Enter showtime ID: ");
-            int showtimeId = Integer.parseInt(scanner.nextLine());
+            int showtimeId = readInt("Enter showtime ID: ");
 
             Showtime showtime = AppContext.getInstance().getShowtimeRepository().findById(showtimeId);
             if (showtime == null) {
@@ -271,6 +272,49 @@ public class Main {
         } catch (Exception e) {
             System.out.println("❌ Error: " + e.getMessage());
             AppLogger.getInstance().logError("Error viewing revenue", e);
+        }
+    }
+
+    public static void measurePerformance() {
+        try {
+            int numberOfUsers = 50;
+            int showtimeId = 2;
+            int seatId = 59;
+
+            System.out.println("🚀 Start measure performance with " + numberOfUsers + " users...");
+            long startTime = System.currentTimeMillis();
+
+            BookingSimulation simulation = new BookingSimulation(
+                    AppContext.getInstance().getBookingService()
+            );
+            BookingSimulation.SimulationResult result = simulation.simulateConcurrentBooking(showtimeId, seatId, numberOfUsers);
+
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+
+            System.out.println("✅ Result:");
+            System.out.println("    - Success: " + result.getSuccess());
+            System.out.println("    - Failure: " + result.getFailure());
+            System.out.println("    - Total time: " + duration + " ms");
+            System.out.println("    - Average duration/user: " + (duration / numberOfUsers) + " ms");
+        } catch (Exception e) {
+            System.err.println("❌ Error measure performance: " + e.getMessage());
+        }
+    }
+
+    private static int readInt(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                String input = scanner.next().trim();
+                if (input.isEmpty()) {
+                    System.out.println("⚠️ Please enter number.");
+                    continue;
+                }
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("⚠️ Please enter valid number.");
+            }
         }
     }
 }
