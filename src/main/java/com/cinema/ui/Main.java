@@ -6,7 +6,9 @@ import com.cinema.repository.*;
 import com.cinema.service.BookingService;
 import com.cinema.simulation.BookingSimulation;
 import com.cinema.util.AppLogger;
+import com.cinema.util.DataInitializer;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,13 +25,21 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+
+        try {
+            initializeData();
+        } catch (IOException e) {
+            System.out.println("❌ Cannot initialize sample data.");
+            e.printStackTrace();
+        }
+
         TheaterUI theaterUI = new TheaterUI(theaterRepository, seatRepository, scanner);
         ShowtimeUI showtimeUI = new ShowtimeUI(showtimeRepository, movieRepository, theaterRepository, scanner);
         BookingUI bookingUI = new BookingUI(bookingService, movieRepository, showtimeRepository, seatRepository, scanner);
 
         while (true) {
             System.out.println("\n===== Welcome to Cinema Booking Application =====");
-            System.out.println("1. View list of movies");
+            System.out.println("1. View movies");
             System.out.println("2. Book a ticket");
             System.out.println("3. Manage theaters");
             System.out.println("4. Manage showtimes");
@@ -67,6 +77,14 @@ public class Main {
                 }
                 default -> System.out.println("⚠️ Your choice is invalid.");
             }
+        }
+    }
+
+    private static void initializeData() throws IOException {
+
+        if (movieRepository.findAll().isEmpty()) {
+            DataInitializer.initSampleData();
+            System.out.println("✅ Sample data initialized.");
         }
     }
 

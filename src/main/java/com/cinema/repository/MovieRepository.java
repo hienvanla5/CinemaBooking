@@ -36,7 +36,7 @@ public class MovieRepository extends BaseRepository<Movie> {
     public MovieRepository(String filePath) {
         this.filePath = filePath;
         loadFromFile();
-        createSampleDataIfEmpty();
+//        createSampleDataIfEmpty();
     }
 
     private void loadFromFile() {
